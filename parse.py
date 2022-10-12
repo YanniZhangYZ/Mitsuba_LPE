@@ -4,7 +4,7 @@ from nfa import (
 )
 
 
-def match(input_string, nfa_machine):
+def verify(input_string, nfa_machine):
     start_node = nfa_machine
 
     current_nfa_set = [start_node]

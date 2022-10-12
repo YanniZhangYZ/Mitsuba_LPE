@@ -3,12 +3,27 @@ from lexical_analysis import Token
 from lexical_analysis import Lexer
 
 
-# 对应的节点有两个出去的ε边
+# Realized function
+# AB	Accepts first A, then B
+# A|B	Accepts A or B
+# A?	0 or 1 occurrence of A
+# A*	0 or more occurrence of A
+# A+	1 or more occurrence of A
+# .     any event. a wildcard in any position
+# [for] matches tokens in the alphabet {f,o,r} in any quantity or sequence
+
+# A{n}	Accepts exactly n consecutive occurrences of A
+# A{n,m}	Accepts from n to m, inclusively, occurrences of A
+# A{n,}	    Accept more than n times consecutive occurrences of A
+# The precedence from high to low is quantifiers (?, *, +, {}), concatenation, alternatives(|,[])
+
+
+# edge with empty transition condition
 EPSILON = -1
-# 边对应的是字符集
+# edge with char transition condition
 CCL = -2
-# 一条ε边
-EMPTY = -3
+
+# TODO: change to LPE related char count, not all ascii character
 ASCII_COUNT = 127
 
 
@@ -34,76 +49,72 @@ class NFA(object):
 
 
 class NFAPair(object):
+
     def __init__(self):
         self.start_node = None
         self.end_node = None
 
 
-
-# construction part
-
+# ============================================
+# Construction Part
+# ============================================
 lexer = None
 
-def pattern(pattern_string):
+
+def regex_to_nfa(regular_expression):
     global lexer
-    lexer = Lexer(pattern_string)
-    lexer.advance()
+    lexer = Lexer(regular_expression)
+    lexer.next_token()
     nfa_pair = NFAPair()
-    # group construct the entire nfa
-    group(nfa_pair)
+    # build_group_nfa() construct the entire nfa
+    build_group_nfa(nfa_pair)
     return nfa_pair.start_node
 
 
-def group(pair_out):
-    # if lexer.match(Token.OPEN_PAREN):
-    #     lexer.advance()
-    #     expr(pair_out)
-    #     if lexer.match(Token.CLOSE_PAREN):
-    #         lexer.advance()
-    # elif lexer.match(Token.EOS):
-    #     return False
-    # else:
-    #     expr(pair_out)
+"""
+group = (expression)*
+expression = factors (| factors)*
+factors := single_factor | single_factor single_factor*
+single_factor = (term | term (* | + | ?))*
+term  = char | [ char ] | .
+"""
 
-    # while True:
-    #     pair = NFAPair()
-    #     if lexer.match(Token.OPEN_PAREN):
-    #         lexer.advance()
-    #         expr(pair)
-    #         pair_out.end_node.next_1 = pair.start_node
-    #         pair_out.end_node = pair.end_node
-    #         if lexer.match(Token.CLOSE_PAREN):
-    #             lexer.advance()
-    #     elif lexer.match(Token.EOS):
-    #         return False
-    #     else:
-    #         expr(pair)
-    #         pair_out.end_node.next_1 = pair.start_node
-    #         pair_out.end_node = pair.end_node
-    if lexer.match(Token.EOS):
+
+def build_group_nfa(pair_out):
+    if lexer.is_current_token(Token.OPEN_PAREN):
+        lexer.next_token()
+        build_expression_nfa(pair_out)
+        if lexer.is_current_token(Token.CLOSE_PAREN):
+            lexer.next_token()
+    elif lexer.is_current_token(Token.EOS):
         return False
     else:
-        expr(pair_out)
+        build_expression_nfa(pair_out)
 
     while True:
         pair = NFAPair()
-        if lexer.match(Token.EOS):
+        if lexer.is_current_token(Token.OPEN_PAREN):
+            lexer.next_token()
+            build_expression_nfa(pair)
+            pair_out.end_node.next_1 = pair.start_node
+            pair_out.end_node = pair.end_node
+            if lexer.is_current_token(Token.CLOSE_PAREN):
+                lexer.next_token()
+        elif lexer.is_current_token(Token.EOS):
             return False
         else:
-            expr(pair)
+            build_expression_nfa(pair)
             pair_out.end_node.next_1 = pair.start_node
             pair_out.end_node = pair.end_node
 
 
-
-
-def expr(pair_out):
-    factor_conn(pair_out)
+def build_expression_nfa(pair_out):
+    build_factors_nfa(pair_out)
     pair = NFAPair()
 
-    while lexer.match(Token.OR):
-        lexer.advance()
-        factor_conn(pair)
+    while lexer.is_current_token(Token.OR):
+        lexer.next_token()
+        build_factors_nfa(pair)
         start = NFA()
         start.next_1 = pair.start_node
         start.next_2 = pair_out.start_node
@@ -117,39 +128,77 @@ def expr(pair_out):
     return True
 
 
-# factor connect
-def factor_conn(pair_out):
+def build_factors_nfa(pair_out):
     if is_conn(lexer.current_token):
-        factor(pair_out)
+        build_single_factor_nfa(pair_out)
 
     while is_conn(lexer.current_token):
         pair = NFAPair()
-        factor(pair)
+        build_single_factor_nfa(pair)
         pair_out.end_node.next_1 = pair.start_node
         pair_out.end_node = pair.end_node
 
     return True
 
 
-# factor * + ? closure
-def factor(pair_out):
+# deal with . [] singlechar * + ?
+def build_single_factor_nfa(pair_out):
     # deal with char and .
-    if lexer.match(Token.L):
+    if lexer.is_current_token(Token.L):
         nfa_single_char(pair_out)
-    elif lexer.match(Token.ANY):
+    elif lexer.is_current_token(Token.ANY):
         nfa_dot_char(pair_out)
-    #deal with *+?
-    if lexer.match(Token.CLOSURE):
+    elif lexer.is_current_token(Token.OPEN_SQUARE):
+        nfa_set_nega_char(pair_out)
+
+    # deal with *+?
+    if lexer.is_current_token(Token.STAR):
         nfa_star_closure(pair_out)
-    elif lexer.match(Token.PLUS_CLOSE):
+    elif lexer.is_current_token(Token.PLUS):
         nfa_plus_closure(pair_out)
-    elif lexer.match(Token.OPTIONAL):
+    elif lexer.is_current_token(Token.OPTIONAL):
         nfa_option_closure(pair_out)
+
+
+def nfa_set_nega_char(pair_out):
+    if not lexer.is_current_token(Token.OPEN_SQUARE):
+        return False
+
+    complement = False
+    lexer.next_token()
+    if lexer.is_current_token(Token.EXCEPT):
+        complement = True
+
+    pair_out.start_node = NFA()
+    pair_out.start_node.next_1 = pair_out.end_node = NFA()
+    pair_out.start_node.edge = CCL
+
+    first = ''
+    while not lexer.is_current_token(Token.CLOSE_SQUARE):
+        first = lexer.lexeme
+        pair_out.start_node.input_set.add(first)
+        lexer.next_token()
+
+    if complement:
+        char_set_complement(pair_out.start_node.input_set)
+
+    lexer.next_token()
+    return True
+
+
+def char_set_complement(input_set):
+    origin = set(input_set)
+    for i in range(ASCII_COUNT):
+        c = chr(i)
+        if c not in input_set:
+            input_set.add(c)
+    for c in origin:
+        input_set.remove(c)
 
 
 # *
 def nfa_star_closure(pair_out):
-    if not lexer.match(Token.CLOSURE):
+    if not lexer.is_current_token(Token.STAR):
         return False
     start = NFA()
     end = NFA()
@@ -162,13 +211,13 @@ def nfa_star_closure(pair_out):
     pair_out.start_node = start
     pair_out.end_node = end
 
-    lexer.advance()
+    lexer.next_token()
     return True
 
 
 # +
 def nfa_plus_closure(pair_out):
-    if not lexer.match(Token.PLUS_CLOSE):
+    if not lexer.is_current_token(Token.PLUS):
         return False
     start = NFA()
     end = NFA()
@@ -180,13 +229,13 @@ def nfa_plus_closure(pair_out):
     pair_out.start_node = start
     pair_out.end_node = end
 
-    lexer.advance()
+    lexer.next_token()
     return True
 
 
 # ?
 def nfa_option_closure(pair_out):
-    if not lexer.match(Token.OPTIONAL):
+    if not lexer.is_current_token(Token.OPTIONAL):
         return False
     start = NFA()
     end = NFA()
@@ -198,56 +247,46 @@ def nfa_option_closure(pair_out):
     pair_out.start_node = start
     pair_out.end_node = end
 
-    lexer.advance()
+    lexer.next_token()
     return True
-
 
 
 def is_conn(token):
     nc = [
         Token.OPEN_PAREN,
         Token.CLOSE_PAREN,
-        # Token.AT_EOL,
         Token.EOS,
-        Token.CLOSURE,
-        Token.PLUS_CLOSE,
-        Token.CCL_END,
-        Token.AT_BOL,
+        Token.STAR,
+        Token.PLUS,
+        Token.CLOSE_SQUARE,
+        Token.CLOSE_CURLY,
+        Token.EXCEPT,
         Token.OR,
     ]
     return token not in nc
 
 
-# def term(pair_out):
-#     if lexer.match(Token.L):
-#         nfa_single_char(pair_out)
-#     elif lexer.match(Token.ANY):
-#         nfa_dot_char(pair_out)
-    # elif lexer.match(Token.CCL_START):
-    #     nfa_set_nega_char(pair_out)
-
-
 # match single char
-def nfa_single_char(pair_out):
-    if not lexer.match(Token.L):
+def nfa_single_char(nfa_pair):
+    if not lexer.is_current_token(Token.L):
         return False
 
-    start = pair_out.start_node = NFA()
-    pair_out.end_node = pair_out.start_node.next_1 = NFA()
-    start.edge = lexer.lexeme
-    lexer.advance()
+    nfa_pair.start_node = NFA()
+    nfa_pair.end_node = nfa_pair.start_node.next_1 = NFA()
+    nfa_pair.start_node.edge = lexer.lexeme
+    lexer.next_token()
     return True
 
 
 # match dot
 def nfa_dot_char(pair_out):
-    if not lexer.match(Token.ANY):
+    if not lexer.is_current_token(Token.ANY):
         return False
 
-    start = pair_out.start_node = NFA()
+    pair_out.start_node = NFA()
     pair_out.end_node = pair_out.start_node.next_1 = NFA()
-    start.edge = CCL
-    start.set_input_set()
+    pair_out.start_node.edge = CCL
+    pair_out.start_node.set_input_set()
 
-    lexer.advance()
+    lexer.next_token()
     return False

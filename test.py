@@ -11,6 +11,8 @@ class TestCase(object):
 
 testLists = []
 testLists.append(TestCase("a", "a", True))
+testLists.append(TestCase("ab", "ab", True))
+testLists.append(TestCase("ac", "ab", False))
 testLists.append(TestCase("a", "b+", False))
 testLists.append(TestCase("b", "b+", True))
 testLists.append(TestCase("b", "a?b", True))
@@ -21,12 +23,14 @@ testLists.append(TestCase("bbb", "a*b", False))
 testLists.append(TestCase("b", "a|b", True))
 testLists.append(TestCase("a", "a|b", True))
 testLists.append(TestCase("bbb", "a|b", False))
+testLists.append(TestCase("b", "[^a]", True))
+testLists.append(TestCase("bcds", "[^a]*", True))
 
 
 # testLists.append(RegexMaterial("THISISREGEXTEST", "([A-Z]*|[0-9]+)", True))
 # testLists.append(TestCase("a", "^c", True))
 # testLists.append(TestCase("c", "^c", False))
-# testLists.append(RegexMaterial("ccccc", "[^c]+", False))
+# testLists.append(TestCase("ccccc", "[^c]+", False))
 # testLists.append(RegexMaterial("ac", "[abcd]+", True))
 
 
@@ -36,7 +40,7 @@ class TestRegex(unittest.TestCase):
             regex = Regex(t.str, t.regex)
             print("str is " + t.str + ", regex is " +
                   t.regex + ", expected " + str(t.expect_result))
-            self.assertEqual(regex.match(), t.expect_result)
+            self.assertEqual(regex.build_and_verify(), t.expect_result)
 
 
 if __name__ == '__main__':

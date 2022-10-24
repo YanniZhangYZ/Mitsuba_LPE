@@ -52,9 +52,10 @@ class Lexer(object):
             self.current_token = Token.EOS
             return Token.EOS
 
-        text = self.lexeme = pattern[pos]
+        self.lexeme = pattern[pos]
+        print(self.lexeme)
         self.pos += 1
-        self.current_token = Tokens.get(text, Token.L)
+        self.current_token = Tokens.get(self.lexeme, Token.L)
         return self.current_token
 
     def is_current_token(self, token):

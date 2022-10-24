@@ -12,6 +12,7 @@ from lexical_analysis import Lexer
 # .     any event. a wildcard in any position
 # [for] matches tokens in the alphabet {f,o,r} in any quantity or sequence
 
+# TODO：
 # A{n}	Accepts exactly n consecutive occurrences of A
 # A{n,m}	Accepts from n to m, inclusively, occurrences of A
 # A{n,}	    Accept more than n times consecutive occurrences of A

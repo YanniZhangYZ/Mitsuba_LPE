@@ -10,28 +10,28 @@ class TestCase(object):
 
 
 testLists = []
+# concatenation
 testLists.append(TestCase("a", "a", True))
 testLists.append(TestCase("ab", "ab", True))
 testLists.append(TestCase("ac", "ab", False))
+# plus
 testLists.append(TestCase("a", "b+", False))
 testLists.append(TestCase("b", "b+", True))
+# option
 testLists.append(TestCase("b", "a?b", True))
 testLists.append(TestCase("aab", "a?b", False))
+# star
 testLists.append(TestCase("b", "a*b", True))
 testLists.append(TestCase("aab", "a*b", True))
 testLists.append(TestCase("bbb", "a*b", False))
+# or
 testLists.append(TestCase("b", "a|b", True))
-testLists.append(TestCase("a", "a|b", True))
-testLists.append(TestCase("bbb", "a|b", False))
+testLists.append(TestCase("aaa", "a|b", False))
+testLists.append(TestCase("ab", "(ab|cd)", True))
+# [], [^ ]
 testLists.append(TestCase("b", "[^a]", True))
 testLists.append(TestCase("bcds", "[^a]*", True))
-
-
-# testLists.append(RegexMaterial("THISISREGEXTEST", "([A-Z]*|[0-9]+)", True))
-# testLists.append(TestCase("a", "^c", True))
-# testLists.append(TestCase("c", "^c", False))
-# testLists.append(TestCase("ccccc", "[^c]+", False))
-# testLists.append(RegexMaterial("ac", "[abcd]+", True))
+testLists.append(TestCase("ac", "[abcd]+", True))
 
 
 class TestRegex(unittest.TestCase):

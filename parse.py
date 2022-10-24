@@ -4,15 +4,15 @@ from nfa import (
 )
 
 
-def verify(input_string, nfa_machine):
-    start_node = nfa_machine
+def verify(input_string, nfa_machine_start):
+    start_node = nfa_machine_start
 
     current_nfa_set = [start_node]
-    next_nfa_set = STAR(current_nfa_set)
+    next_nfa_set = closure(current_nfa_set)
 
     for i, ch in enumerate(input_string):
         current_nfa_set = move(next_nfa_set, ch)
-        next_nfa_set = STAR(current_nfa_set)
+        next_nfa_set = closure(current_nfa_set)
 
         if next_nfa_set is None:
             return False
@@ -23,7 +23,7 @@ def verify(input_string, nfa_machine):
     return False
 
 
-def STAR(input_set):
+def closure(input_set):
     if len(input_set) <= 0:
         return None
 
@@ -44,7 +44,7 @@ def STAR(input_set):
             if next2 not in input_set:
                 input_set.append(next2)
                 nfa_stack.append(next2)
-        
+
     return input_set
 
 
@@ -61,4 +61,3 @@ def has_accepted_state(nfa_set):
     for nfa in nfa_set:
         if nfa.next_1 is None and nfa.next_2 is None:
             return True
-

@@ -55,20 +55,32 @@ class NodePair(object):
 class NFA(object):
 
     def __init__(self, regex):
-        self.lexer = None
+        self.regex = regex
+        self.lexer = Lexer(self.regex)
         self.start_node = None
         self.node_idx_helper = 0
         self.node_table = None
-        self.regex = regex
+        self.regex_to_nfa()
 
-    # def get_node(self, idx):
-    #     return self.idx_node_list[idx]
+    def get_node(self, idx):
+        return self.node_table[idx-1]
 
     # def get_node_idx(self, node):
     #     return self.idx_node_list.index(node)
 
     # def add_idx_node_item(self, node):
     #     self.idx_node_dict.append(node)
+
+    def regex_to_nfa(self):
+        self.lexer.move_next()
+        nfa_pair = NodePair()
+        # build_group_nfa() construct the entire nfa
+        self.build_nfa(nfa_pair)
+        self.start_node = nfa_pair.start_node
+
+        # deal with node labeling
+        self.traverse_nfa(self.start_node)
+        self.relabel_node()
 
     def get_node_table(self):
         return self.node_table
@@ -98,18 +110,6 @@ class NFA(object):
     def relabel_node(self):
         for i, node in enumerate(self.node_table):
             node.node_ID = i+1
-
-    def regex_to_nfa(self):
-        self.lexer = Lexer(self.regex)
-        self.lexer.move_next()
-        nfa_pair = NodePair()
-        # build_group_nfa() construct the entire nfa
-        self.build_nfa(nfa_pair)
-        self.start_node = nfa_pair.start_node
-
-        # deal with node labeling
-        self.traverse_nfa(self.start_node)
-        self.relabel_node()
 
     """
     group = (expression)*

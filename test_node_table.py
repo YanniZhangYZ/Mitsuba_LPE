@@ -4,7 +4,6 @@ from parse import Verifier
 
 regex = "a?b.c?d*"
 nfa = NFA(regex)
-nfa.regex_to_nfa()
 node_table = nfa.get_node_table()
 
 print("====================")

@@ -6,44 +6,33 @@ from nfa import (
 
 class Verifier(object):
 
-    # def verify_all(self, input_string, nfa_start_node):
-    #     passed_node = []
-    #     start_node = nfa_start_node
-
-    #     curr_node_set = [start_node]
-    #     next_node_set = self.closure(curr_node_set)
-
-    #     for i, ch in enumerate(input_string):
-    #         curr_node_set = self.move(next_node_set, ch)
-    #         next_node_set = self.closure(curr_node_set)
-    #         # print("----------- " + ch + " finish-------------")
-    #         # if next_node_set is not None:
-    #         #     for n in next_node_set:
-    #         #         print(n.node_ID)
-    #         if next_node_set is not None:
-    #             passed_node.append(next_node_set[0].node_ID)
-
-    #         if next_node_set is None:
-    #             # print("early stop at " + ch)
-    #             return False, passed_node
-
-    #         if self.has_accepted_state(next_node_set) and i == len(input_string) - 1:
-    #             return True, passed_node
-    #     # print("string ends, doesn't match regex")
-    #     return False, passed_node
     def verify_all(self, input_string, nfa_start_node):
+        passed_node = []
         start_node = nfa_start_node
 
-        current_nfa_set = [start_node]
-        next_nfa_set = self.closure(current_nfa_set)
+        curr_node_set = [start_node]
+        next_node_set = self.closure(curr_node_set)
+
         for i, ch in enumerate(input_string):
-            current_nfa_set = self.move(next_nfa_set, ch)
-            next_nfa_set = self.closure(current_nfa_set)
-            if next_nfa_set is None:
-                return False
-            if self.has_accepted_state(next_nfa_set) and i == len(input_string) - 1:
-                return True
-        return False
+            curr_node_set = self.move(next_node_set, ch)
+            next_node_set = self.closure(curr_node_set)
+            # print("----------- " + ch + " finish-------------")
+            # if next_node_set is not None:
+            #     for n in next_node_set:
+            #         print(n.node_ID)
+            if next_node_set is not None:
+                if self.has_accepted_state(next_node_set) and i == len(input_string) - 1:
+                    passed_node.append("ACCEPT")
+                    return True, passed_node
+                passed_node.append(next_node_set[0].node_ID)
+
+            if next_node_set is None:
+                # print("early stop at " + ch)
+                passed_node.append("KILL")
+                return False, passed_node
+
+        # print("string ends, doesn't match regex")
+        return False, passed_node
 
     def verify_batch(self, events, nfa_start_node):
         passed_node = []
@@ -55,14 +44,16 @@ class Verifier(object):
             #     for n in next_node_set:
             #         print(n.node_ID)
             if next_node_set is not None:
+                if self.has_accepted_state(next_node_set) and i == len(events) - 1:
+                    passed_node.append("ACCEPT")
+                    return True, passed_node
                 passed_node.append(next_node_set[0].node_ID)
 
             if next_node_set is None:
                 # print("early stop at " + e)
+                passed_node.append("KILL")
                 return False, passed_node
 
-            if self.has_accepted_state(next_node_set) and i == len(events) - 1:
-                return True, passed_node
             curr_start_node = next_node_set[0]
         # print("string ends, doesn't match regex")
         return False, passed_node

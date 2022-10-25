@@ -2,6 +2,7 @@ import unittest
 # from regex import Regex
 from nfa import NFA
 from parse import Verifier
+from interface import Interface
 
 
 class TestCase(object):
@@ -43,10 +44,11 @@ testLists.append(TestCase("bcds", "[^a]*", True))
 class TestRegex(unittest.TestCase):
     def test(self):
         for t in testLists:
+
             nfa = NFA(t.regex)
-            nfa.regex_to_nfa()
             verifier = Verifier()
-            result_all = verifier.verify_all(t.str, nfa.start_node)
+            result_all, passed_node = verifier.verify_all(
+                t.str, nfa.start_node)
             # result_batch, batch_passed_node = verifier.verify_batch(
             #     t.str, nfa.start_node)
             print("str is " + t.str + ", regex is " +

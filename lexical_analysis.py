@@ -45,18 +45,17 @@ class Lexer(object):
         self.pos = 0
         self.current_token = None
 
-    def next_token(self):
+    def move_next(self):
         pos = self.pos
         pattern = self.pattern
         if pos > len(pattern) - 1:
             self.current_token = Token.EOS
             return Token.EOS
 
-        self.lexeme = pattern[pos]
-        print(self.lexeme)
+        text = self.lexeme = pattern[pos]
         self.pos += 1
-        self.current_token = Tokens.get(self.lexeme, Token.L)
+        self.current_token = Tokens.get(text, Token.L)
         return self.current_token
 
-    def is_current_token(self, token):
+    def is_current(self, token):
         return self.current_token == token

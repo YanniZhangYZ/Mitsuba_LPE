@@ -1,5 +1,5 @@
-from nfa import NFA
-from parse import Verifier
+from prototype.nfa import NFA
+from prototype.parse import Verifier
 
 
 regex = "a?b.c?d*"

@@ -1,6 +1,6 @@
 
-from lexical_analysis import Token
-from lexical_analysis import Lexer
+from prototype.lexical_analysis import Token
+from prototype.lexical_analysis import Lexer
 
 
 # Realized function
@@ -11,10 +11,6 @@ from lexical_analysis import Lexer
 # A+	1 or more occurrence of A
 # .     any event. a wildcard in any position
 # [for] matches tokens in the alphabet {f,o,r} in any quantity or sequence
-
-# A{n}	Accepts exactly n consecutive occurrences of A
-# A{n,m}	Accepts from n to m, inclusively, occurrences of A
-# A{n,}	    Accept more than n times consecutive occurrences of A
 
 # The precedence from high to low is quantifiers (?, *, +, {}), concatenation, alternatives(|,[])
 

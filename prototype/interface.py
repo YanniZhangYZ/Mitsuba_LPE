@@ -1,7 +1,7 @@
 
 import numpy as np
-from nfa import NFA
-from parse import Verifier
+from prototype.nfa import NFA
+from prototype.parse import Verifier
 
 NO_EVENT = "!"
 KILLED_STATE = -1

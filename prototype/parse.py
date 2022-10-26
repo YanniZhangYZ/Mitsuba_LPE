@@ -1,4 +1,4 @@
-from nfa import (
+from prototype.nfa import (
     EPSILON,
     CCL,
 )

@@ -19,10 +19,10 @@ expected_result_2, passed_node_2 = interface.verifier.verify_all(
     "aabdd", interface.nfa.start_node)
 print(expected_result_2, passed_node_2)
 expected_result_2, passed_node_2 = interface.verifier.verify_all(
-    "bcdc", interface.nfa.start_node)
+    "bd", interface.nfa.start_node)
 print(expected_result_2, passed_node_2)
 expected_result_2, passed_node_2 = interface.verifier.verify_all(
-    "bd", interface.nfa.start_node)
+    "bcdc", interface.nfa.start_node)
 print(expected_result_2, passed_node_2)
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

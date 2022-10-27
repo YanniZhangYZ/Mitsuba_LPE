@@ -29,6 +29,11 @@ class DrJitInterface(object):
             chars.append(chr(a))
         return np.array(chars)
 
+    # Param:
+        # state_batch: array of mi.Int32
+        # event_batch: numpy array of char. Need to translate to ascii code of corresponding char event.
+    # Return:
+        # next_state_batch: array of mi.Int32
     def batch_tansition(self, state_batch, event_batch):
         next_state_batch = state_batch
         ascii_event_batch = self.char_array_to_ascii(event_batch)

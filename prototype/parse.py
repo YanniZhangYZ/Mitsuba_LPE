@@ -1,19 +1,16 @@
-from prototype.nfa import (
-    EPSILON,
-    CCL,
-)
+from prototype.lexical_analysis import EdgeUtils
 
 
 class Verifier(object):
 
-    def verify_all(self, input_string, nfa_start_node):
+    def verify_all(self, event_idx_list, nfa_start_node):
         passed_node = []
         start_node = nfa_start_node
 
         curr_node_set = [start_node]
         next_node_set = self.closure(curr_node_set)
 
-        for i, ch in enumerate(input_string):
+        for i, ch in enumerate(event_idx_list):
             curr_node_set = self.move(next_node_set, ch)
             next_node_set = self.closure(curr_node_set)
             # print("----------- " + ch + " finish-------------")
@@ -21,7 +18,7 @@ class Verifier(object):
             #     for n in next_node_set:
             #         print(n.node_ID)
             if next_node_set is not None:
-                if self.has_accepted_state(next_node_set) and i == len(input_string) - 1:
+                if self.has_accepted_state(next_node_set) and i == len(event_idx_list) - 1:
                     passed_node.append("ACCEPT")
                     return True, passed_node
                 passed_node.append(next_node_set[0].node_ID)
@@ -83,13 +80,13 @@ class Verifier(object):
             # print("pop "+str(node.node_ID))
             next1 = node.next_1
             next2 = node.next_2
-            if next1 is not None and node.edge == EPSILON:
+            if next1 is not None and node.edge == EdgeUtils.EPSILON:
                 if next1 not in curr_node_set:
                     curr_node_set.append(next1)
                     node_stack.append(next1)
                     # print("push " + str(next1.node_ID))
 
-            if next2 is not None and node.edge == EPSILON:
+            if next2 is not None and node.edge == EdgeUtils.EPSILON:
                 if next2 not in curr_node_set:
                     curr_node_set.append(next2)
                     node_stack.append(next2)
@@ -100,7 +97,8 @@ class Verifier(object):
     def move(self, curr_node_set, ch):
         out_set = []
         for node in curr_node_set:
-            if node.edge == ch or (node.edge == CCL and ch in node.valid_input_set):
+            # print(ch, node.edge)
+            if node.edge == ch or (node.edge == EdgeUtils.CCL and ch in node.valid_input_set):
                 out_set.append(node.next_1)
 
         return out_set

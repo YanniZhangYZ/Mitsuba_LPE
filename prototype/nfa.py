@@ -1,5 +1,8 @@
 
 from prototype.lexical_analysis import Token
+from prototype.lexical_analysis import Event
+from prototype.lexical_analysis import Grammar
+from prototype.lexical_analysis import EdgeUtils
 from prototype.lexical_analysis import Lexer
 
 
@@ -15,20 +18,16 @@ from prototype.lexical_analysis import Lexer
 # The precedence from high to low is quantifiers (?, *, +, {}), concatenation, alternatives(|,[])
 
 
-# edge with empty transition condition
-EPSILON = -1
-# edge with char transition condition
-CCL = -2
-
 # TODO: change to LPE related char count, not all ascii character
 ASCII_COUNT = 127
+EVENTS = Grammar.events
 
 
 class Node(object):
     STATUS_NUM = 0
 
     def __init__(self, node_ID):
-        self.edge = EPSILON
+        self.edge = EdgeUtils.EPSILON
         self.next_1 = None
         self.next_2 = None
         self.visited = False
@@ -37,8 +36,8 @@ class Node(object):
 
     def set_full_valid_input_set(self):
         self.valid_input_set = set()
-        for i in range(ASCII_COUNT):
-            self.valid_input_set.add(chr(i))
+        for v in EVENTS:
+            self.valid_input_set.add(v)
 
 
 class NodePair(object):
@@ -53,10 +52,11 @@ class NFA(object):
     def __init__(self, regex):
         self.regex = regex
         self.lexer = Lexer(self.regex)
-        self.start_node = None
-        self.node_idx_helper = 0
-        self.node_table = None
-        self.regex_to_nfa()
+        if self.lexer.check_regex_simple():
+            self.start_node = None
+            self.node_idx_helper = 0
+            self.node_table = None
+            self.regex_to_nfa()
 
     def get_node(self, idx):
         return self.node_table[idx-1]
@@ -99,7 +99,6 @@ class NFA(object):
             # print(str(start_node.node_ID) + "-->" + str(next2.node_ID))
             if next2 not in self.node_table:
                 next_nodes.append(next2)
-
         for next in next_nodes:
             self.traverse_nfa(next, self.node_table)
 
@@ -206,7 +205,7 @@ class NFA(object):
         self.node_idx_helper += 1
         pair_out.start_node.next_1 = pair_out.end_node = Node(
             self.node_idx_helper)
-        pair_out.start_node.edge = CCL
+        pair_out.start_node.edge = EdgeUtils.CCL
 
         first = ''
         while not self.lexer.is_current(Token.CLOSE_SQUARE):
@@ -222,12 +221,11 @@ class NFA(object):
 
     def char_set_complement(self, valid_input_set):
         origin = set(valid_input_set)
-        for i in range(ASCII_COUNT):
-            c = chr(i)
-            if c not in valid_input_set:
-                valid_input_set.add(c)
-        for c in origin:
-            valid_input_set.remove(c)
+        for v in EVENTS:
+            if v not in valid_input_set:
+                valid_input_set.add(v)
+        for v in origin:
+            valid_input_set.remove(v)
 
     # *
 
@@ -310,6 +308,9 @@ class NFA(object):
         if not self.lexer.is_current(Token.L):
             return False
 
+        # if not self.lexer.is_current_event():
+        #     return False
+
         self.node_idx_helper += 1
         nfa_pair.start_node = Node(self.node_idx_helper)
         self.node_idx_helper += 1
@@ -330,8 +331,9 @@ class NFA(object):
         self.node_idx_helper += 1
         pair_out.end_node = pair_out.start_node.next_1 = Node(
             self.node_idx_helper)
-        pair_out.start_node.edge = CCL
+        pair_out.start_node.edge = EdgeUtils.CCL
         pair_out.start_node.set_full_valid_input_set()
+        # print(pair_out.start_node.valid_input_set)
 
         self.lexer.move_next()
         return False

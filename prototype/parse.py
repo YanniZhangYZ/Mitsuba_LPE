@@ -3,17 +3,36 @@ from prototype.lexical_analysis import EdgeUtils
 
 class Verifier(object):
 
+    def dfa_match(self, input_string, jump_table):
+        cur_status = 0
+        for i, c in enumerate(input_string):
+            jump_dict = jump_table[cur_status]
+            if jump_dict:
+                js = jump_dict.get(c)
+                if js is None:
+                    return False
+                else:
+                    cur_status = js
+            if i == len(input_string) - 1 and jump_dict.get('accepted'):
+                return True
+
+        return jump_table[cur_status].get('accepted') is not None
+
     def verify_all(self, event_idx_list, nfa_start_node):
         passed_node = []
         start_node = nfa_start_node
 
         curr_node_set = [start_node]
         next_node_set = self.closure(curr_node_set)
+        # print("----------- first closure-------------")
+        # if next_node_set is not None:
+        #     for n in next_node_set:
+        #         print(n.node_ID)
 
         for i, ch in enumerate(event_idx_list):
             curr_node_set = self.move(next_node_set, ch)
             next_node_set = self.closure(curr_node_set)
-            # print("----------- " + ch + " finish-------------")
+            # print("----------- " + str(ch) + " finish-------------")
             # if next_node_set is not None:
             #     for n in next_node_set:
             #         print(n.node_ID)
@@ -66,7 +85,6 @@ class Verifier(object):
         return next_node_set
 
     def closure(self, curr_node_set):
-
         if len(curr_node_set) <= 0:
             return None
 
@@ -91,7 +109,6 @@ class Verifier(object):
                     curr_node_set.append(next2)
                     node_stack.append(next2)
                     # print("push " + str(next2.node_ID))
-
         return curr_node_set
 
     def move(self, curr_node_set, ch):

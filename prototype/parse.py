@@ -1,4 +1,5 @@
 from prototype.lexical_analysis import EdgeUtils
+from prototype.lexical_analysis import StateUtils
 
 
 class Verifier(object):
@@ -13,10 +14,9 @@ class Verifier(object):
                     return False
                 else:
                     cur_status = js
-            if i == len(input_string) - 1 and jump_dict.get('accepted'):
+            if i == len(input_string) - 1 and jump_dict.get(StateUtils.ACCEPT_STATE):
                 return True
-
-        return jump_table[cur_status].get('accepted') is not None
+        return jump_table[cur_status].get(StateUtils.ACCEPT_STATE) is not None
 
     def verify_all(self, event_idx_list, nfa_start_node):
         passed_node = []

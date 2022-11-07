@@ -28,6 +28,11 @@ class EdgeUtils(Enum):
     CCL = 32
 
 
+class StateUtils(Enum):
+    KILLED_STATE = -1
+    ACCEPT_STATE = -2
+
+
 class Event(Enum):
     Reflection = 21  # reflection type
     Transmission = 22  # transmission type

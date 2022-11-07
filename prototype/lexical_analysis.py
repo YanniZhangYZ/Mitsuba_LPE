@@ -29,8 +29,9 @@ class EdgeUtils(Enum):
 
 
 class StateUtils(Enum):
-    KILLED_STATE = -1
-    ACCEPT_STATE = -2
+    KILLED_STATE = 0
+    ACCEPT_STATE = -1
+    NORMAL_STATE = 1
 
 
 class Event(Enum):
@@ -45,12 +46,22 @@ class Event(Enum):
 
 class Grammar(object):
 
-    # TODO: optimize to parallel
-    def check_translate_event_string_simple(self, event_string):
+    # # check event batch from multi ray
+    def check_translate_event_batch_simple(self, event_batch):
         enum_events = []
-        for ch in list(event_string):
+        for ch in list(event_batch):
             if ch not in self.events_grammar.keys():
                 print("Invalid input strings.")
+                return None
+            enum_events.append(self.events_grammar.get(ch).value)
+        return enum_events
+
+    # for event series of one ray
+    def check_translate_event_string_simple(self, event_batch):
+        enum_events = []
+        for ch in list(event_batch):
+            if ch not in self.events_grammar.keys():
+                print("Invalid input batch.")
                 return None
             enum_events.append(self.events_grammar.get(ch))
         return enum_events

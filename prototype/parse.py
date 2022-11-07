@@ -4,6 +4,7 @@ from prototype.lexical_analysis import StateUtils
 
 class Verifier(object):
 
+    # verify string using jump table
     def dfa_match(self, input_string, jump_table):
         cur_status = 0
         for i, c in enumerate(input_string):

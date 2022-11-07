@@ -7,7 +7,7 @@ from prototype.interface import Interface
 
 class TestCase(object):
     def __init__(self, str, regex, expect_result):
-        self.str = str
+        self.input_str = str
         self.regex = regex
         self.expect_result = expect_result
 
@@ -48,10 +48,10 @@ class TestRegex(unittest.TestCase):
             nfa = NFA(t.regex)
             verifier = Verifier()
             result_all, passed_node = verifier.verify_all(
-                t.str, nfa.start_node)
+                t.input_str, nfa.start_node)
             # result_batch, batch_passed_node = verifier.verify_batch(
             #     t.str, nfa.start_node)
-            print("str is " + t.str + ", regex is " +
+            print("str is " + t.input_str + ", regex is " +
                   t.regex + ", expected " + str(t.expect_result))
 
             # self.assertEqual(result_batch, t.expect_result)

@@ -50,11 +50,11 @@ class TestRegex(unittest.TestCase):
             nfa = NFA(t.regex)
             verifier = Verifier()
             g = Grammar()
-            enum_input = g.check_translate_event_string_simple(t.str)
+            enum_input = g.check_translate_event_string_simple(t.input_str)
             result_all, passed_node = verifier.verify_all(
                 enum_input, nfa.start_node)
 
-            print("str is " + t.str + ", regex is " +
+            print("str is " + t.input_str + ", regex is " +
                   t.regex + ", expected " + str(t.expect_result))
 
             self.assertEqual(result_all, t.expect_result)

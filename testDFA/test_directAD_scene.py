@@ -194,4 +194,4 @@ img = mi.render(scene)
 
 
 # mi.Bitmap(img).write('daTest.exr')
-mi.Bitmap(img).write('origin.exr')
+mi.Bitmap(img).write('glossy_flag.exr')

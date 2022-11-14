@@ -1,9 +1,9 @@
 
-from prototype.lexical_analysis import Token
-from prototype.lexical_analysis import Event
-from prototype.lexical_analysis import Grammar
-from prototype.lexical_analysis import EdgeUtils
-from prototype.lexical_analysis import Lexer
+from .lexical_analysis import Token
+from .lexical_analysis import Event
+from .lexical_analysis import Grammar
+from .lexical_analysis import EdgeUtils
+from .lexical_analysis import Lexer
 
 
 # Realized function

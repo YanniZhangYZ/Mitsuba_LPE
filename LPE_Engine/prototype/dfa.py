@@ -1,7 +1,7 @@
-from prototype.parse import Verifier
-from prototype.lexical_analysis import StateUtils
-from prototype.lexical_analysis import Event
-from prototype.lexical_analysis import Grammar
+from .parse import Verifier
+from .lexical_analysis import StateUtils
+from .lexical_analysis import Event
+from .lexical_analysis import Grammar
 MAX_DFA_STATUS_NUM = 50
 
 

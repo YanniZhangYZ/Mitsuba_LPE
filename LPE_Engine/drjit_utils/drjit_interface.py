@@ -1,7 +1,7 @@
 
 import numpy as np
-from prototype.nfa import NFA
-from prototype.parse import Verifier
+from ..prototype.nfa import NFA
+from ..prototype.parse import Verifier
 import drjit as dr
 import mitsuba as mi
 

@@ -1,8 +1,10 @@
 
-from prototype.nfa import NFA
-from prototype.dfa import DFA
-from prototype.lexical_analysis import Grammar
-from prototype.lexical_analysis import StateUtils
+from ..prototype.nfa import NFA
+from ..prototype.dfa import DFA
+from ..prototype.lexical_analysis import Grammar
+from ..prototype.lexical_analysis import StateUtils
+from ..prototype.lexical_analysis import Event
+
 
 import drjit as dr
 import mitsuba as mi
@@ -26,9 +28,10 @@ class DrJitDFA(object):
     # Param:
         # events is traslated event batch
         # states is state batch
-    def transition(self, states, events):
+    def transition(self, states, events, light_mask):
         has_match_edge = dr.zeros(mi.Int32, dr.width(states))
         new_states = states
+
         for e in self.dfa.edges:
             # print("origin: " + str(e.origin.node_ID) + " event: " + str(e.event))
             mask_state = dr.eq(e.origin.node_ID, states)
@@ -47,11 +50,11 @@ class DrJitDFA(object):
                     mask, StateUtils.ACCEPT_STATE.value, new_states)
 
         killed_mask = dr.eq(0, has_match_edge)
-        # print(killed_mask)
-        # print("--------------------")
-
         new_states = dr.select(
             killed_mask, StateUtils.KILLED_STATE.value, new_states)
+
+        # new_states = dr.select(
+        #     light_mask, StateUtils.LIGHT_STATE.value, new_states)
 
         return new_states
 
@@ -84,6 +87,8 @@ class DrJitDFA(object):
         passed_state.append(state_ID)
         result = False
         for ch in enum_input:
+            # if ch == Event.Emitter:
+            #     continue
             has_match_edge = False
             for e in self.dfa.edges:
                 if state_ID == e.origin.node_ID and ch == e.event:

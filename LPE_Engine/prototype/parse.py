@@ -1,5 +1,5 @@
-from prototype.lexical_analysis import EdgeUtils
-from prototype.lexical_analysis import StateUtils
+from .lexical_analysis import EdgeUtils
+from .lexical_analysis import StateUtils
 
 
 class Verifier(object):

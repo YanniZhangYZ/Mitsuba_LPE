@@ -104,15 +104,15 @@ class SimpleFlagIntegrator(ADIntegrator):
         # --------------try to tell transmission/ reflection/ diffuse ------------
         reflection_flag = mi.has_flag(
             bsdf_sample.sampled_type, mi.BSDFFlags.Reflection)
-        transmission_flag = mi.has_flag(
-            bsdf_sample.sampled_type, mi.BSDFFlags.Transmission)
+        diffuse_flag = mi.has_flag(
+            bsdf_sample.sampled_type, mi.BSDFFlags.Diffuse)
         delta_flag = mi.has_flag(
-            bsdf_sample.sampled_type, mi.BSDFFlags.Transmission)
+            bsdf_sample.sampled_type, mi.BSDFFlags.Delta)
         glossy_flag = mi.has_flag(
             bsdf_sample.sampled_type, mi.BSDFFlags.Glossy)
        # ----------------------------------------------------------------
 
-        active_filter = active_bsdf & glossy_flag
+        active_filter = active_bsdf & diffuse_flag
         #  active_filter = active_bsdf & transmission_flag
 
         # Illumination

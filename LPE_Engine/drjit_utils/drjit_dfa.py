@@ -28,7 +28,7 @@ class DrJitDFA(object):
     # Param:
         # events is traslated event batch
         # states is state batch
-    def transition(self, states, events, light_mask):
+    def transition(self, states, events, emitter_mask):
         has_match_edge = dr.zeros(mi.Int32, dr.width(states))
         new_states = states
 
@@ -38,7 +38,6 @@ class DrJitDFA(object):
             mask_event = dr.eq(e.event.value, events)
             mask = mask_state & mask_event
             new_states = dr.select(mask, e.next.node_ID, new_states)
-            # print(new_states)
             has_match_edge = dr.select(mask, 1, has_match_edge)
         # print("--------------------")
         # print("match edge " + str(has_match_edge))
@@ -53,31 +52,13 @@ class DrJitDFA(object):
         new_states = dr.select(
             killed_mask, StateUtils.KILLED_STATE.value, new_states)
 
-        # new_states = dr.select(
-        #     light_mask, StateUtils.LIGHT_STATE.value, new_states)
-
+        # make sure only emitter event get transisted here
+        if emitter_mask != False:
+            not_emitter_mask = dr.neq(True, emitter_mask)
+            new_states = dr.select(not_emitter_mask, states, new_states)
         return new_states
-
-        # state_ID = 1
-        # result = False
-        # for ch in enums:
-        #     has_match_edge = False
-        #     for e in dfa.edges:
-        #         if state_ID == e.origin.node_ID and ch == e.event:
-        #             if e.next.is_accept_state == StateUtils.ACCEPT_STATE:
-        #                 result = True
-        #                 # break
-        #                 return result
-        #             state_ID = e.next.node_ID
-        #             has_match_edge = True
-        #             # print("origin: " + str(e.origin.node_ID)+" next: " +
-        #             #       str(state_ID) + " event: " + str(ch))
-        #             break
-        #     if has_match_edge == False:
-        #         break
-        #     if result == True:
-        #         break
-        # return result
+        
+        
 
     def transition_verification(self, input_str):
         passed_state = []

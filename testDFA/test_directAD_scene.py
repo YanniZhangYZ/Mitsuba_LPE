@@ -3,9 +3,9 @@ import mitsuba as mi
 # from mitsuba.python.ad.integrators.direct_reparam import DirectReparamIntegrator
 from mitsuba.python.ad.integrators import direct_reparam
 from mitsuba.python.ad.integrators import emission_reparam
-# from simple import SimpleIntegrator
+from simple import SimpleIntegrator
 from simple_flag import SimpleFlagIntegrator
-# from simple_dfa import SimpleDFAIntegrator
+from simple_dfa import SimpleDFAIntegrator
 # from LPE_Engine.drjit_utils import DrJitDFA
 
 
@@ -18,9 +18,9 @@ def cornell_box_AD():
         'type': 'scene',
         'integrator': {
             # 'type': 'simple',
-            'type': 'simpleFlag',
+            # 'type': 'simpleFlag',
             # 'type': 'emission_reparam',
-            # 'type': 'simpleDFA',
+            'type': 'simpleDFA',
 
             # 'type': 'path',
             # 'max_depth': 2
@@ -78,14 +78,15 @@ def cornell_box_AD():
         'large': {
             # m_components.push_back(BSDFFlags::DeltaReflection | BSDFFlags::FrontSide);
             # m_components.push_back(BSDFFlags::DiffuseReflection | BSDFFlags::FrontSide);
-            'type': 'plastic',
-            "diffuse_reflectance": {
-                'type': 'rgb',
-                'value': [0.2, 0.8, 0.12],
-            },
+            # 'type': 'plastic',
+            # "diffuse_reflectance": {
+            #     'type': 'rgb',
+            #     'value': [0.2, 0.8, 0.12],
+            # },
 
-            # 'type': 'conductor',
-            # 'material': 'Au',
+            # BSDFFlags::DeltaReflection | BSDFFlags::FrontSide
+            'type': 'conductor',
+            'material': 'Au',
         },
         'small': {
             # m_components.push_back(BSDFFlags::GlossyReflection | BSDFFlags::FrontSide);
@@ -98,6 +99,9 @@ def cornell_box_AD():
             },
         },
         # -------------------- Emitter --------------------
+        'emitter': {
+                'type': 'constant'
+        },
         'light': {
             'type': 'rectangle',
             'to_world': T.translate([0.0, 0.99, 0.01]).rotate([1, 0, 0], 90).scale([0.23, 0.19, 0.19]),
@@ -161,7 +165,6 @@ def cornell_box_AD():
             'bsdf': {
                 'type': 'ref',
                 'id':  'small'
-                # 'id':  'white'
             }
         },
         'large-box': {
@@ -170,7 +173,6 @@ def cornell_box_AD():
             'bsdf': {
                 'type': 'ref',
                 'id':  'large'
-                # 'id':  'white'
             }
         },
     }
@@ -179,12 +181,12 @@ def cornell_box_AD():
 mi.set_variant('llvm_ad_rgb')
 # mi.register_integrator(
 #     "direct_reparam", lambda props: DirectReparamIntegrator(props))
-# mi.register_integrator(
-#     "simple", lambda props: SimpleIntegrator(props))
+mi.register_integrator(
+    "simple", lambda props: SimpleIntegrator(props))
 mi.register_integrator(
     "simpleFlag", lambda props:  SimpleFlagIntegrator(props))
-# mi.register_integrator(
-#     "simpleDFA", lambda props:  SimpleDFAIntegrator(props))
+mi.register_integrator(
+    "simpleDFA", lambda props:  SimpleDFAIntegrator(props))
 
 # regex = "R*T.V?G+S*"
 # jitDFA = DrJitDFA(regex)
@@ -194,4 +196,4 @@ img = mi.render(scene)
 
 
 # mi.Bitmap(img).write('daTest.exr')
-mi.Bitmap(img).write('glossy_flag.exr')
+mi.Bitmap(img).write('dfa_G.exr')

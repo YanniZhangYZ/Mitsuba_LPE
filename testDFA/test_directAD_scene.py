@@ -6,6 +6,7 @@ from mitsuba.python.ad.integrators import emission_reparam
 from simple import SimpleIntegrator
 from simple_flag import SimpleFlagIntegrator
 from simple_dfa import SimpleDFAIntegrator
+from simple_mis import SimpleMISIntegrator
 # from LPE_Engine.drjit_utils import DrJitDFA
 
 
@@ -18,9 +19,10 @@ def cornell_box_AD():
         'type': 'scene',
         'integrator': {
             # 'type': 'simple',
-            # 'type': 'simpleFlag',
+            'type': 'simpleFlag',
+            # 'type': 'simpleMIS',
             # 'type': 'emission_reparam',
-            'type': 'simpleDFA',
+            # 'type': 'simpleDFA',
 
             # 'type': 'path',
             # 'max_depth': 2
@@ -187,6 +189,8 @@ mi.register_integrator(
     "simpleFlag", lambda props:  SimpleFlagIntegrator(props))
 mi.register_integrator(
     "simpleDFA", lambda props:  SimpleDFAIntegrator(props))
+mi.register_integrator(
+    "simpleMIS", lambda props:  SimpleMISIntegrator(props))
 
 # regex = "R*T.V?G+S*"
 # jitDFA = DrJitDFA(regex)
@@ -195,5 +199,7 @@ scene = mi.load_dict(cornell_box_AD())
 img = mi.render(scene)
 
 
-# mi.Bitmap(img).write('daTest.exr')
-mi.Bitmap(img).write('dfa_G.exr')
+# mi.Bitmap(img).write('flag_G.exr')
+mi.Bitmap(img).write('dfa_GE.exr')
+# mi.Bitmap(img).write('mis.exr')
+

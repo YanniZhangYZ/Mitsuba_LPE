@@ -87,12 +87,13 @@ class SimpleFlagIntegrator(ADIntegrator):
         si = pi.compute_surface_interaction(ray)
 
         # Differentiable evaluation of intersected emitter / envmap
-        L += si.emitter(scene).eval(si)
+        # L += si.emitter(scene).eval(si)
 
         # ------------------ BSDF sampling -------------------
 
         # Should we continue tracing to reach one more vertex?
-        active_next = si.is_valid()
+        # active_next = si.is_valid()
+        active_next = si.is_valid() & dr.eq(si.emitter(scene), None)
         bsdf = si.bsdf(ray)
 
         # Detached BSDF sample
@@ -112,7 +113,7 @@ class SimpleFlagIntegrator(ADIntegrator):
             bsdf_sample.sampled_type, mi.BSDFFlags.Glossy)
        # ----------------------------------------------------------------
 
-        active_filter = active_bsdf & diffuse_flag
+        active_filter = active_bsdf & glossy_flag
         #  active_filter = active_bsdf & transmission_flag
 
         # Illumination

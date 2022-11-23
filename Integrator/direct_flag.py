@@ -5,8 +5,12 @@ import mitsuba as mi
 
 from mitsuba.python.ad.integrators.common import ADIntegrator
 
+class Flag(object):
+  def __init__(self, id):
+        self.id = id
 
-class SimpleFlagIntegrator(ADIntegrator):
+
+class DirectFlagIntegrator(ADIntegrator):
     r"""
     .. _integrator-direct_reparam:
 
@@ -61,6 +65,9 @@ class SimpleFlagIntegrator(ADIntegrator):
 
     def __init__(self, props):
         super().__init__(props)
+        f= props['flag']
+        self.flag = Flag(f)
+
 
     def sample(self,
                mode: dr.ADMode,
@@ -103,17 +110,16 @@ class SimpleFlagIntegrator(ADIntegrator):
         active_bsdf = active_next & dr.any(dr.neq(bsdf_weight, 0.0))
 
         # --------------try to tell transmission/ reflection/ diffuse ------------
-        reflection_flag = mi.has_flag(
-            bsdf_sample.sampled_type, mi.BSDFFlags.Reflection)
-        diffuse_flag = mi.has_flag(
-            bsdf_sample.sampled_type, mi.BSDFFlags.Diffuse)
-        delta_flag = mi.has_flag(
-            bsdf_sample.sampled_type, mi.BSDFFlags.Delta)
-        glossy_flag = mi.has_flag(
-            bsdf_sample.sampled_type, mi.BSDFFlags.Glossy)
+        flag = dr.full(mi.Bool, True, dr.width(active_bsdf))
+        if self.flag.id==1:
+          flag = mi.has_flag(bsdf_sample.sampled_type, mi.BSDFFlags.Diffuse)
+        if self.flag.id==2:
+          flag =  mi.has_flag(bsdf_sample.sampled_type, mi.BSDFFlags.Delta)
+        if self.flag.id==3:
+          flag =  mi.has_flag(bsdf_sample.sampled_type, mi.BSDFFlags.Glossy)
        # ----------------------------------------------------------------
 
-        active_filter = active_bsdf & glossy_flag
+        active_filter = active_bsdf & flag
         #  active_filter = active_bsdf & transmission_flag
 
         # Illumination

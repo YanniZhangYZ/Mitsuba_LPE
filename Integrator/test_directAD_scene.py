@@ -3,10 +3,14 @@ import mitsuba as mi
 # from mitsuba.python.ad.integrators.direct_reparam import DirectReparamIntegrator
 from mitsuba.python.ad.integrators import direct_reparam
 from mitsuba.python.ad.integrators import emission_reparam
-from simple import SimpleIntegrator
-from simple_flag import SimpleFlagIntegrator
-from simple_dfa import SimpleDFAIntegrator
-from simple_mis import SimpleMISIntegrator
+from direct import DirectIntegrator
+from direct_flag import DirectFlagIntegrator
+from direct_dfa import DirectDFAIntegrator
+from direct_mis import DirectMISIntegrator
+from  path_mis import PathMisIntegrator
+from  path_mats_dfa import PathMatsDFAIntegrator
+from  path_mats import PathMatsIntegrator
+from  path_mis_dfa import PathMisDFAIntegrator
 # from LPE_Engine.drjit_utils import DrJitDFA
 
 
@@ -17,16 +21,6 @@ def cornell_box_AD():
     T = mi.ScalarTransform4f
     return {
         'type': 'scene',
-        'integrator': {
-            # 'type': 'simple',
-            'type': 'simpleFlag',
-            # 'type': 'simpleMIS',
-            # 'type': 'emission_reparam',
-            # 'type': 'simpleDFA',
-
-            # 'type': 'path',
-            # 'max_depth': 2
-        },
         # -------------------- Sensor --------------------
         'sensor': {
             'type': 'perspective',
@@ -42,7 +36,7 @@ def cornell_box_AD():
             ),
             'sampler': {
                 'type': 'independent',
-                'sample_count': 1024
+                'sample_count': 256
             },
             'film': {
                 'type': 'hdrfilm',
@@ -184,22 +178,131 @@ mi.set_variant('llvm_ad_rgb')
 # mi.register_integrator(
 #     "direct_reparam", lambda props: DirectReparamIntegrator(props))
 mi.register_integrator(
-    "simple", lambda props: SimpleIntegrator(props))
+    "direct", lambda props: DirectIntegrator(props))
 mi.register_integrator(
-    "simpleFlag", lambda props:  SimpleFlagIntegrator(props))
+    "directFlag", lambda props:  DirectFlagIntegrator(props))
 mi.register_integrator(
-    "simpleDFA", lambda props:  SimpleDFAIntegrator(props))
+    "directDFA", lambda props:  DirectDFAIntegrator(props))
 mi.register_integrator(
-    "simpleMIS", lambda props:  SimpleMISIntegrator(props))
+    "directMIS", lambda props:  DirectMISIntegrator(props))
+mi.register_integrator(
+    "pmis", lambda props:  PathMisIntegrator(props))
+mi.register_integrator(
+    "pmatsDFA", lambda props:  PathMatsDFAIntegrator(props))
 
-# regex = "R*T.V?G+S*"
-# jitDFA = DrJitDFA(regex)
+mi.register_integrator(
+    "pmats", lambda props:  PathMatsIntegrator(props))
+
+mi.register_integrator(
+    "pmisDFA", lambda props:  PathMisDFAIntegrator(props))
+
 
 scene = mi.load_dict(cornell_box_AD())
-img = mi.render(scene)
+
+inegrator1 = mi.load_dict(
+    {
+        'type': 'pmis',
+        'max_depth': 2,
+    })
+img1 = mi.render(scene, integrator=inegrator1)
+
+inegrator2 = mi.load_dict(
+    {
+        'type': 'pmis',
+        'max_depth': 6,
+    })
+img2 = mi.render(scene, integrator=inegrator2)
+
+inegrator3 = mi.load_dict(
+    {
+        'type': 'pmis',
+        'max_depth': 10,
+    })
+img3 = mi.render(scene, integrator=inegrator3)
+
+inegrator4 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'DE',
+        'max_depth': 2,
+        
+    })
+img4 = mi.render(scene, integrator=inegrator4)
+
+inegrator5 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'AE',
+        'max_depth': 2,
+    })
+img5 = mi.render(scene, integrator=inegrator5)
+
+inegrator6 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'GE',
+        'max_depth': 2,
+        
+    })
+img6 = mi.render(scene, integrator=inegrator6)
+
+inegrator7 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'E',
+        'max_depth': 2,
+    })
+img7 = mi.render(scene, integrator=inegrator7)
+
+inegrator8 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'D+E',
+        'max_depth': 10,
+        
+    })
+img8 = mi.render(scene, integrator=inegrator8)
+
+inegrator9 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'A+D*E',
+        'max_depth': 10,
+    })
+img9 = mi.render(scene, integrator=inegrator9)
+
+inegrator10 = mi.load_dict(
+    {
+        'type': 'pmisDFA',
+        'lpe': 'A*G*E',
+        'max_depth': 10,
+    })
+img10 = mi.render(scene, integrator=inegrator10)
 
 
-# mi.Bitmap(img).write('flag_G.exr')
-mi.Bitmap(img).write('dfa_GE.exr')
-# mi.Bitmap(img).write('mis.exr')
+
+
+
+mi.Bitmap(img1).write('validation_report/mis2.exr')
+mi.Bitmap(img2).write('validation_report/mis6.exr')
+mi.Bitmap(img3).write('validation_report/mis10.exr')
+mi.Bitmap(img4).write('validation_report/mis_DE.exr')
+mi.Bitmap(img5).write('validation_report/mis_AE.exr')
+mi.Bitmap(img6).write('validation_report/mis_GE.exr')
+mi.Bitmap(img7).write('validation_report/mis_E.exr')
+mi.Bitmap(img8).write('validation_report/mis_D+E10.exr')
+mi.Bitmap(img9).write('validation_report/mis_A+D*E10.exr')
+mi.Bitmap(img10).write('validation_report/mis_A*G*E10.exr')
+
+mi.Bitmap(img4+img5+img6+img7).write('validation_report/mis_all.exr')
+# mi.Bitmap(img4+img6+img8+img10).write('validation_report/flag_all.exr')
+
+# mi.Bitmap(img1).write('try_pmis_DE2.exr')
+# mi.Bitmap(img1 - img2).write('try_diff_D*E.exr')
+# mi.Bitmap(img2 - img1).write('try_diff_D*E2.exr')
+# mi.Bitmap(img3).write('try_pmats_notDE.exr')
+# mi.Bitmap(img4).write('ref_direct_emitter.exr')
+# mi.Bitmap(img2).write('pmis_lobe_6.exr')
+
+
 

@@ -9,14 +9,17 @@ from LPE_Engine.prototype.lexical_analysis import Event
 from LPE_Engine.prototype.lexical_analysis import StateUtils
 
 
-class SimpleDFAIntegrator(ADIntegrator):
+class DirectDFAIntegrator(ADIntegrator):
     def __init__(self, props):
         super().__init__(props)
-        regex = "AE"
+
+        regex = props['lpe']
+        # regex = "AE"
         # regex = "DE"
         # regex = "GE"
         # regex = "G"
         # regex = "E"
+        print(regex)
         self.dfa = DrJitDFA(regex)
 
     def sample(self,
@@ -48,11 +51,11 @@ class SimpleDFAIntegrator(ADIntegrator):
 
         # ADD EMITTER EVENT FOR dr.neq(si.emitter, 0) -> TRANSITION()
         emitter_mask = dr.neq(si.emitter(scene), None)
-        events = self.creat_emitter_events(batch_size, emitter_mask)
-        next_states = self.dfa.transition(curr_states, events, emitter_mask)
+        events =self.dfa.creat_emitter_events(emitter_mask)
+        next_states = self.dfa.transition(curr_states, events)
         curr_states = next_states
-        accept_mask = self.get_accept_mask(curr_states)
-        kill_mask = self.get_kill_mask(curr_states)
+        accept_mask = self.dfa.get_accept_mask(curr_states)
+        kill_mask = self.dfa.get_kill_mask(curr_states)
 
         # Differentiable evaluation of intersected emitter / envmap
         # L += si.emitter(scene).eval(si)  # MASKED FOR ACCEPTED STATES
@@ -77,13 +80,12 @@ class SimpleDFAIntegrator(ADIntegrator):
 
 
         # ADD bsdf_sample.sample_type EVENT -> TRANSITION()
-        bsdf_events = self.flags_to_events(bsdf_sample.sampled_type)
-        emitter_mask = dr.eq(bsdf_events, Event.Emitter.value)
-        next_states = self.dfa.transition(curr_states, bsdf_events, emitter_mask)
+        bsdf_events = self.dfa.flags_to_events(bsdf_sample.sampled_type)
+        next_states = self.dfa.transition(curr_states, bsdf_events)
         curr_states = next_states
 
 
-        kill_mask = self.get_kill_mask(curr_states)
+        kill_mask = self.dfa.get_kill_mask(curr_states)
         active_filter = active_bsdf & dr.neq(True,kill_mask)
 
         # Illumination
@@ -92,10 +94,10 @@ class SimpleDFAIntegrator(ADIntegrator):
 
         # ADD EMITTER EVENT FOR dr.neq(si.emitter, 0) -> TRANSITION()
         emitter_mask = dr.neq(si_bsdf.emitter(scene), None)
-        events = self.creat_emitter_events(batch_size, emitter_mask)
-        next_states = self.dfa.transition(curr_states, events, emitter_mask)
+        events = self.dfa.creat_emitter_events(emitter_mask)
+        next_states = self.dfa.transition(curr_states, events)
         curr_states = next_states
-        accept_mask = self.get_accept_mask(curr_states)
+        accept_mask = self.dfa.get_accept_mask(curr_states)
 
         L += dr.select(accept_mask, L_bsdf * bsdf_weight, 0)
 
@@ -104,30 +106,30 @@ class SimpleDFAIntegrator(ADIntegrator):
         return L, active, None
 
 
-    def get_accept_mask(self,states):
-        return dr.eq(states, StateUtils.ACCEPT_STATE.value)
+    # def get_accept_mask(self,states):
+    #     return dr.eq(states, StateUtils.ACCEPT_STATE.value)
     
-    def get_kill_mask(self,states):
-        return dr.eq(states, StateUtils.KILLED_STATE.value)
+    # def get_kill_mask(self,states):
+    #     return dr.eq(states, StateUtils.KILLED_STATE.value)
 
-    def creat_emitter_events(self, batch_width, emitter_mask):
-        events = dr.zeros(mi.Int32, dr.width(batch_width)) + \
-            Event.NO_EVENT.value
-        events = dr.select(emitter_mask, Event.Emitter.value, events)
-        return events
+    # def creat_emitter_events(self, batch_width, emitter_mask):
+    #     events = dr.zeros(mi.Int32, dr.width(batch_width)) + \
+    #         Event.NULL.value
+    #     events = dr.select(emitter_mask, Event.Emitter.value, events)
+    #     return events
 
-    def flags_to_events(self, flags):
-        flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
-                     mi.BSDFFlags.Diffuse: Event.Diffuse.value,
-                     mi.BSDFFlags.Transmission: Event.Transmission.value,
-                     mi.BSDFFlags.Glossy: Event.Glossy.value,
-                     mi.BSDFFlags.Delta: Event.Delta.value}
-        events = dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
+    # def flags_to_events(self, flags):
+    #     flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
+    #                  mi.BSDFFlags.Diffuse: Event.Diffuse.value,
+    #                  mi.BSDFFlags.Transmission: Event.Transmission.value,
+    #                  mi.BSDFFlags.Glossy: Event.Glossy.value,
+    #                  mi.BSDFFlags.Delta: Event.Delta.value}
+    #     events = dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
 
-        for f, event_value in flag_list.items():
-            mask = mi.has_flag(flags, f)
-            events = dr.select(mask, event_value, events)
-        return events
+    #     for f, event_value in flag_list.items():
+    #         mask = mi.has_flag(flags, f)
+    #         events = dr.select(mask, event_value, events)
+    #     return events
 
         # mi.register_integrator(
-        #     "simple_reparam", lambda props: SimpleIntegrator(props))
+        #     "Direct_reparam", lambda props: DirectIntegrator(props))

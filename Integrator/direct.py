@@ -6,7 +6,7 @@ import mitsuba as mi
 from mitsuba.python.ad.integrators.common import ADIntegrator, mis_weight
 
 
-class SimpleIntegrator(ADIntegrator):
+class DirectIntegrator(ADIntegrator):
     r"""
     .. _integrator-direct_reparam:
 
@@ -126,4 +126,4 @@ class SimpleIntegrator(ADIntegrator):
 
 
 # mi.register_integrator(
-#     "simple_reparam", lambda props: SimpleIntegrator(props))
+#     "Direct_reparam", lambda props: DirectIntegrator(props))

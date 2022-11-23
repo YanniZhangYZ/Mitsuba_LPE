@@ -46,6 +46,7 @@ class Event(Enum):
     Delta = 27  # specular mode
     Emitter = 28  # can only be the first event or last event
     NO_EVENT = -1
+    NULL = -2 # only used with Emitter event to create emitter event batch
 
 
 class Grammar(object):
@@ -86,6 +87,7 @@ class Grammar(object):
         'E': Event.Emitter,
         'A': Event.Delta,
         'N': Event.NO_EVENT,
+        'U': Event.NULL,
     }
 
     tokens_grammar = {
@@ -130,6 +132,7 @@ class Lexer(object):
         self.pos += 1
         self.current_token = Grammar.tokens_grammar.get(text, Token.L)
 
+        # if haven't got any test
         if self.current_token == Token.L:
             self.lexeme = Grammar.events_grammar.get(text, Event.NO_EVENT)
             # print(type(Grammar.events.get(text, Event.NO_EVENT)))

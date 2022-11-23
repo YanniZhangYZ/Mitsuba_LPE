@@ -42,9 +42,37 @@ class DFA(object):
                     self.accept_node.append(True)
                     continue
                 self.accept_node.append(False)
-
+    
     def get_edges(self):
         self.get_accept_node()
+        # print(self.accept_node)
+        # for dict in self.jump_table:
+        #     if dict:
+        #         print(dict)
+        # print("===============================")
+
+        for origin_ID in range(len(self.jump_table)):
+            edges = self.jump_table[origin_ID]
+            if edges:
+                for edge_event, next_ID in edges.items():
+                    origin = DFANode(origin_ID+1)
+                    if self.accept_node[origin_ID]:
+                        origin.set_accept()
+
+                    if edge_event == StateUtils.ACCEPT_STATE:
+                        edge = DFAEdge(origin, origin, Event.NO_EVENT)
+                        self.edges.append(edge)
+                        continue
+
+                    next = DFANode(next_ID+1)
+                    if self.accept_node[next_ID]:
+                        next.set_accept()
+                    edge = DFAEdge(origin, next, edge_event)
+                    self.edges.append(edge)
+    
+    def get_complement_edges(self):
+        self.get_accept_node()
+        self.accept_node = [not elem for elem in self.accept_node]
         # print(self.accept_node)
         # for dict in self.jump_table:
         #     if dict:

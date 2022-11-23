@@ -6,7 +6,7 @@ import mitsuba as mi
 from mitsuba.python.ad.integrators.common import ADIntegrator, mis_weight
 
 
-class SimpleMISIntegrator(ADIntegrator):
+class DirectMISIntegrator(ADIntegrator):
 
     def __init__(self, props):
         super().__init__(props)

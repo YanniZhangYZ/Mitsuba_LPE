@@ -9,27 +9,28 @@ from ..prototype.lexical_analysis import Event
 import drjit as dr
 import mitsuba as mi
 
-# NO_EVENT = "!"
-# KILLED_STATE = -1
-# ACCEPT_STATE = 0
 mi.set_variant('llvm_ad_rgb')
 
 
 class DrJitDFA(object):
-    def __init__(self, regex):
+    def __init__(self, regex,get_complement=False):
         self.regex = regex
         self.nfa = NFA(self.regex)
         # self.verifier = Verifier()
         self.g = Grammar()
         self.dfa = DFA()
         self.dfa.convert_to_dfa(self.nfa.start_node)
-        self.dfa.get_edges()
+        if get_complement:
+            self.dfa.get_complement_edges()
+        else:
+            self.dfa.get_edges()
 
     # Param:
         # events is traslated event batch
         # states is state batch
-    def transition(self, states, events, emitter_mask):
+    def transition(self, states, events):
         has_match_edge = dr.zeros(mi.Int32, dr.width(states))
+        null_event_mask = dr.eq(Event.NULL.value, events)
         new_states = states
 
         for e in self.dfa.edges:
@@ -51,14 +52,55 @@ class DrJitDFA(object):
         killed_mask = dr.eq(0, has_match_edge)
         new_states = dr.select(
             killed_mask, StateUtils.KILLED_STATE.value, new_states)
+        
+        new_states = dr.select(
+            null_event_mask, states, new_states)
 
         # make sure only emitter event get transisted here
-        if emitter_mask != False:
-            not_emitter_mask = dr.neq(True, emitter_mask)
-            new_states = dr.select(not_emitter_mask, states, new_states)
+        # if emitter_mask != False:
+        #     not_emitter_mask = dr.neq(True, emitter_mask)
+        #     new_states = dr.select(not_emitter_mask, states, new_states)
         return new_states
         
-        
+
+    def get_accept_mask(self,states):
+        return dr.eq(states, StateUtils.ACCEPT_STATE.value)
+    
+    def get_kill_mask(self,states):
+        return dr.eq(states, StateUtils.KILLED_STATE.value)
+
+    def creat_emitter_events(self, emitter_mask):
+        events = dr.zeros(mi.Int32, dr.width(emitter_mask)) + \
+            Event.NULL.value
+        events = dr.select(emitter_mask, Event.Emitter.value, events)
+        return events
+
+    def flags_to_events(self, flags):
+        flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
+                     mi.BSDFFlags.Diffuse: Event.Diffuse.value,
+                     mi.BSDFFlags.Transmission: Event.Transmission.value,
+                     mi.BSDFFlags.Glossy: Event.Glossy.value,
+                     mi.BSDFFlags.Delta: Event.Delta.value}
+        events = dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
+
+        for f, event_value in flag_list.items():
+            mask = mi.has_flag(flags, f)
+            events = dr.select(mask, event_value, events)
+        return events
+
+    def single_flag_to_events(self, flag, batch_size):
+        flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
+                     mi.BSDFFlags.Diffuse: Event.Diffuse.value,
+                     mi.BSDFFlags.Transmission: Event.Transmission.value,
+                     mi.BSDFFlags.Glossy: Event.Glossy.value,
+                     mi.BSDFFlags.Delta: Event.Delta.value}
+        value = mi.Int32(flag_list.get(flag))
+        events = dr.zeros(mi.Int32, batch_size) + value
+        return events
+
+
+
+
 
     def transition_verification(self, input_str):
         passed_state = []

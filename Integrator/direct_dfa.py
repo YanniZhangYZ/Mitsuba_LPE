@@ -50,15 +50,13 @@ class DirectDFAIntegrator(ADIntegrator):
         si = scene.ray_intersect(ray, active)
 
         # ADD EMITTER EVENT FOR dr.neq(si.emitter, 0) -> TRANSITION()
+
         emitter_mask = dr.neq(si.emitter(scene), None)
-        events =self.dfa.creat_emitter_events(emitter_mask)
-        next_states = self.dfa.transition(curr_states, events)
-        curr_states = next_states
-        accept_mask = self.dfa.get_accept_mask(curr_states)
-        kill_mask = self.dfa.get_kill_mask(curr_states)
+        events =self.dfa.create_emitter_events(emitter_mask)
+        temp_curr_states = self.dfa.transition(curr_states, events)
+        accept_mask = self.dfa.get_accept_mask(temp_curr_states)
 
         # Differentiable evaluation of intersected emitter / envmap
-        # L += si.emitter(scene).eval(si)  # MASKED FOR ACCEPTED STATES
         L += dr.select(accept_mask, si.emitter(scene).eval(si),0)
 
 
@@ -66,7 +64,7 @@ class DirectDFAIntegrator(ADIntegrator):
 
         # Should we continue tracing to reach one more vertex?
         active_next = si.is_valid()
-        active_next = active_next & dr.neq(True,kill_mask)
+        # active_next = active_next & dr.neq(True,kill_mask)
 
         bsdf = si.bsdf(ray)
 
@@ -80,13 +78,11 @@ class DirectDFAIntegrator(ADIntegrator):
 
 
         # ADD bsdf_sample.sample_type EVENT -> TRANSITION()
-        bsdf_events = self.dfa.flags_to_events(bsdf_sample.sampled_type)
-        next_states = self.dfa.transition(curr_states, bsdf_events)
-        curr_states = next_states
-
-
+        bsdf_events0, bsdf_events1= self.dfa.flags_to_events(bsdf_sample.sampled_type)
+        curr_states = self.dfa.transition(curr_states, bsdf_events0)
+        curr_states = self.dfa.transition(curr_states, bsdf_events1)
         kill_mask = self.dfa.get_kill_mask(curr_states)
-        active_filter = active_bsdf & dr.neq(True,kill_mask)
+        active_filter = active_bsdf & ~kill_mask
 
         # Illumination
         si_bsdf = scene.ray_intersect(ray_bsdf, active_filter)
@@ -94,7 +90,7 @@ class DirectDFAIntegrator(ADIntegrator):
 
         # ADD EMITTER EVENT FOR dr.neq(si.emitter, 0) -> TRANSITION()
         emitter_mask = dr.neq(si_bsdf.emitter(scene), None)
-        events = self.dfa.creat_emitter_events(emitter_mask)
+        events = self.dfa.create_emitter_events(emitter_mask)
         next_states = self.dfa.transition(curr_states, events)
         curr_states = next_states
         accept_mask = self.dfa.get_accept_mask(curr_states)
@@ -104,32 +100,3 @@ class DirectDFAIntegrator(ADIntegrator):
         # L += L_bsdf * bsdf_weight  # MASKED FOR ACCEPTED STATES
 
         return L, active, None
-
-
-    # def get_accept_mask(self,states):
-    #     return dr.eq(states, StateUtils.ACCEPT_STATE.value)
-    
-    # def get_kill_mask(self,states):
-    #     return dr.eq(states, StateUtils.KILLED_STATE.value)
-
-    # def creat_emitter_events(self, batch_width, emitter_mask):
-    #     events = dr.zeros(mi.Int32, dr.width(batch_width)) + \
-    #         Event.NULL.value
-    #     events = dr.select(emitter_mask, Event.Emitter.value, events)
-    #     return events
-
-    # def flags_to_events(self, flags):
-    #     flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
-    #                  mi.BSDFFlags.Diffuse: Event.Diffuse.value,
-    #                  mi.BSDFFlags.Transmission: Event.Transmission.value,
-    #                  mi.BSDFFlags.Glossy: Event.Glossy.value,
-    #                  mi.BSDFFlags.Delta: Event.Delta.value}
-    #     events = dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
-
-    #     for f, event_value in flag_list.items():
-    #         mask = mi.has_flag(flags, f)
-    #         events = dr.select(mask, event_value, events)
-    #     return events
-
-        # mi.register_integrator(
-        #     "Direct_reparam", lambda props: DirectIntegrator(props))

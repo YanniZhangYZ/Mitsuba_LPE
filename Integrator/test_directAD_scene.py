@@ -81,8 +81,15 @@ def cornell_box_AD():
             # },
 
             # BSDFFlags::DeltaReflection | BSDFFlags::FrontSide
-            'type': 'conductor',
-            'material': 'Au',
+            # 'type': 'conductor',
+            # 'material': 'Au',
+
+
+            # BSDFFlags::DeltaReflection | BSDFFlags::FrontSide
+            # BSDFFlags::DeltaTransmission | BSDFFlags::FrontSide
+            'type':"dielectric",
+            "int_ior":"diamond",
+            "ext_ior":"air",
         },
         'small': {
             # m_components.push_back(BSDFFlags::GlossyReflection | BSDFFlags::FrontSide);
@@ -201,21 +208,24 @@ scene = mi.load_dict(cornell_box_AD())
 
 inegrator1 = mi.load_dict(
     {
-        'type': 'pmis',
-        'max_depth': 2,
+        'type': 'pmisDFA',
+        'lpe':'DRE',
+        'max_depth': 10,
     })
 img1 = mi.render(scene, integrator=inegrator1)
 
 inegrator2 = mi.load_dict(
     {
-        'type': 'pmis',
-        'max_depth': 6,
+        'type': 'pmisDFA',
+        'lpe':'DR.+E',
+        'max_depth':10,
     })
 img2 = mi.render(scene, integrator=inegrator2)
 
 inegrator3 = mi.load_dict(
     {
-        'type': 'pmis',
+        'type': 'pmisDFA',
+        'lpe':'DT.*E',
         'max_depth': 10,
     })
 img3 = mi.render(scene, integrator=inegrator3)
@@ -223,8 +233,8 @@ img3 = mi.render(scene, integrator=inegrator3)
 inegrator4 = mi.load_dict(
     {
         'type': 'pmisDFA',
-        'lpe': 'DE',
-        'max_depth': 2,
+        'lpe':'SRE',
+        'max_depth': 10,
         
     })
 img4 = mi.render(scene, integrator=inegrator4)
@@ -232,16 +242,16 @@ img4 = mi.render(scene, integrator=inegrator4)
 inegrator5 = mi.load_dict(
     {
         'type': 'pmisDFA',
-        'lpe': 'AE',
-        'max_depth': 2,
+        'lpe':'SR.+E',
+        'max_depth': 10,
     })
 img5 = mi.render(scene, integrator=inegrator5)
 
 inegrator6 = mi.load_dict(
     {
         'type': 'pmisDFA',
-        'lpe': 'GE',
-        'max_depth': 2,
+        'lpe':'ST.*E',
+        'max_depth': 10,
         
     })
 img6 = mi.render(scene, integrator=inegrator6)
@@ -249,52 +259,65 @@ img6 = mi.render(scene, integrator=inegrator6)
 inegrator7 = mi.load_dict(
     {
         'type': 'pmisDFA',
-        'lpe': 'E',
-        'max_depth': 2,
+        'lpe':'E',
+        'max_depth': 10,
     })
 img7 = mi.render(scene, integrator=inegrator7)
 
 inegrator8 = mi.load_dict(
     {
         'type': 'pmisDFA',
-        'lpe': 'D+E',
+        'lpe':'G.*E',
         'max_depth': 10,
         
     })
 img8 = mi.render(scene, integrator=inegrator8)
 
-inegrator9 = mi.load_dict(
-    {
-        'type': 'pmisDFA',
-        'lpe': 'A+D*E',
-        'max_depth': 10,
-    })
-img9 = mi.render(scene, integrator=inegrator9)
+# inegrator9 = mi.load_dict(
+#     {
+#         'type': 'pmisDFA',
+#         'lpe': 'A+D*E',
+#         'max_depth': 10,
+#     })
+# img9 = mi.render(scene, integrator=inegrator9)
 
 inegrator10 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe': 'A*G*E',
+        'type': 'path',
+        # 'lpe': 'A*G*E',
         'max_depth': 10,
     })
 img10 = mi.render(scene, integrator=inegrator10)
 
 
 
+mi.Bitmap(img1).write('5_mis_directDiffuse.exr')
+mi.Bitmap(img2).write('5_mis_indirectDiffuse.exr')
+mi.Bitmap(img3).write('5_mis_subsurface.exr')
+mi.Bitmap(img4).write('5_mis_directSpecular.exr')
+mi.Bitmap(img5).write('5_mis_directSpecular.exr')
+mi.Bitmap(img6).write('5_mis_transmissive.exr')
+mi.Bitmap(img7).write('5_mis_emissive.exr')
+mi.Bitmap(img8).write('5_mis_glossy.exr')
+mi.Bitmap(img1+img2+img3+img4+img5+img6+img7+img8).write('5_mis_all.exr')
+mi.Bitmap(img10).write('path_10.exr')
 
 
-mi.Bitmap(img1).write('validation_report/mis2.exr')
-mi.Bitmap(img2).write('validation_report/mis6.exr')
-mi.Bitmap(img3).write('validation_report/mis10.exr')
-mi.Bitmap(img4).write('validation_report/mis_DE.exr')
-mi.Bitmap(img5).write('validation_report/mis_AE.exr')
-mi.Bitmap(img6).write('validation_report/mis_GE.exr')
-mi.Bitmap(img7).write('validation_report/mis_E.exr')
-mi.Bitmap(img8).write('validation_report/mis_D+E10.exr')
-mi.Bitmap(img9).write('validation_report/mis_A+D*E10.exr')
-mi.Bitmap(img10).write('validation_report/mis_A*G*E10.exr')
 
-mi.Bitmap(img4+img5+img6+img7).write('validation_report/mis_all.exr')
+
+
+# mi.Bitmap(img1).write('validation_report/mis2.exr')
+# mi.Bitmap(img2).write('validation_report/mis6.exr')
+# mi.Bitmap(img3).write('validation_report/mis10.exr')
+# mi.Bitmap(img4).write('validation_report/mis_DE.exr')
+# mi.Bitmap(img5).write('validation_report/mis_AE.exr')
+# mi.Bitmap(img6).write('validation_report/mis_GE.exr')
+# mi.Bitmap(img7).write('validation_report/mis_E.exr')
+# mi.Bitmap(img8).write('validation_report/mis_D+E10.exr')
+# mi.Bitmap(img9).write('validation_report/mis_A+D*E10.exr')
+# mi.Bitmap(img10).write('validation_report/mis_A*G*E10.exr')
+
+# mi.Bitmap(img4+img5+img6+img7).write('validation_report/mis_all.exr')
 # mi.Bitmap(img4+img6+img8+img10).write('validation_report/flag_all.exr')
 
 # mi.Bitmap(img1).write('try_pmis_DE2.exr')

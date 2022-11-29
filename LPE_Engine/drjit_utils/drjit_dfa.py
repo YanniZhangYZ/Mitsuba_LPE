@@ -15,6 +15,17 @@ mi.set_variant('llvm_ad_rgb')
 class DrJitDFA(object):
     def __init__(self, regex,get_complement=False):
         self.regex = regex
+        self.flag_group_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
+                                mi.BSDFFlags.Diffuse: Event.Diffuse.value,
+                                mi.BSDFFlags.Transmission: Event.Transmission.value,
+                                mi.BSDFFlags.Glossy: Event.Glossy.value,
+                                mi.BSDFFlags.Delta: Event.Delta.value}
+        self.flag_dict = {mi.BSDFFlags.DiffuseReflection:[Event.Diffuse.value,Event.Reflection.value], 
+                          mi.BSDFFlags.DiffuseTransmission: [Event.Diffuse.value,Event.Transmission.value],
+                          mi.BSDFFlags.GlossyReflection:[Event.Glossy.value,Event.Reflection.value] ,
+                          mi.BSDFFlags.GlossyTransmission:[Event.Glossy.value,Event.Transmission.value] ,
+                          mi.BSDFFlags.DeltaReflection:[Event.Delta.value,Event.Reflection.value] ,
+                          mi.BSDFFlags.DeltaTransmission:[Event.Delta.value,Event.Transmission.value]}
         self.nfa = NFA(self.regex)
         # self.verifier = Verifier()
         self.g = Grammar()
@@ -69,38 +80,47 @@ class DrJitDFA(object):
     def get_kill_mask(self,states):
         return dr.eq(states, StateUtils.KILLED_STATE.value)
 
-    def creat_emitter_events(self, emitter_mask):
+    def create_emitter_events(self, emitter_mask):
         events = dr.zeros(mi.Int32, dr.width(emitter_mask)) + \
             Event.NULL.value
         events = dr.select(emitter_mask, Event.Emitter.value, events)
         return events
 
-    def flags_to_events(self, flags):
-        flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
-                     mi.BSDFFlags.Diffuse: Event.Diffuse.value,
-                     mi.BSDFFlags.Transmission: Event.Transmission.value,
-                     mi.BSDFFlags.Glossy: Event.Glossy.value,
-                     mi.BSDFFlags.Delta: Event.Delta.value}
+    def flag_groups_to_events(self, flags):
         events = dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
-
-        for f, event_value in flag_list.items():
+        for f, event_value in self.flag_group_list.items():
             mask = mi.has_flag(flags, f)
             events = dr.select(mask, event_value, events)
         return events
 
-    def single_flag_to_events(self, flag, batch_size):
-        flag_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
-                     mi.BSDFFlags.Diffuse: Event.Diffuse.value,
-                     mi.BSDFFlags.Transmission: Event.Transmission.value,
-                     mi.BSDFFlags.Glossy: Event.Glossy.value,
-                     mi.BSDFFlags.Delta: Event.Delta.value}
-        value = mi.Int32(flag_list.get(flag))
+    def single_flag_group_to_events(self, flag, batch_size):
+        value = mi.Int32(self.flag_group_list.get(flag))
         events = dr.zeros(mi.Int32, batch_size) + value
         return events
 
+    def NEE_flag_to_events(self, flag, batch_size):
+        values = mi.Int32(self.flag_dict.get(flag))
+        events0 = dr.zeros(mi.Int32, batch_size) + values[0]
+        events1 = dr.zeros(mi.Int32, batch_size) + values[1]
+        return events0,events1
+
+
+    def flags_to_events(self, flags):
+        events0= dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
+        events1= dr.zeros(mi.Int32, dr.width(flags)) + Event.NO_EVENT.value
+        for f, event_values in self.flag_dict.items():
+            mask = mi.has_flag(flags, f)
+            events0 = dr.select(mask, event_values[0], events0)
+            events1 = dr.select(mask, event_values[1], events1)
+        return events0,events1
+
+
+    def get_NEE_flags(self):
+        return list(self.flag_dict.keys())[:-2]
 
 
 
+# ===============================================================
 
     def transition_verification(self, input_str):
         passed_state = []

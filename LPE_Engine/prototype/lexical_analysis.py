@@ -42,9 +42,8 @@ class Event(Enum):
     Volume = 23  # volume interaction type
     Diffuse = 24  # diffuse mode
     Glossy = 25  # glossy mode
-    Specular = 26  # specular mode
-    Delta = 27  # specular mode
-    Emitter = 28  # can only be the first event or last event
+    Delta = 26  # specular mode
+    Emitter = 27  # can only be the first event or last event
     NO_EVENT = -1
     NULL = -2 # only used with Emitter event to create emitter event batch
 
@@ -72,7 +71,7 @@ class Grammar(object):
         return enum_events
 
     events = [Event.Camera, Event.Reflection, Event.Transmission, Event.Volume,
-              Event.Diffuse, Event.Glossy, Event.Specular, Event.Emitter, Event.Delta]
+              Event.Diffuse, Event.Glossy, Event.Emitter, Event.Delta]
     tokens = [Token.ANY, Token.EXCEPT, Token.STAR, Token.OPTIONAL, Token.PLUS, Token.OR, Token.OPEN_SQUARE,
               Token.CLOSE_SQUARE, Token.OPEN_CURLY, Token.CLOSE_CURLY, Token.OPEN_PAREN, Token.CLOSE_PAREN, Token.DASH]
 
@@ -83,9 +82,8 @@ class Grammar(object):
         'V': Event.Volume,
         'D': Event.Diffuse,
         'G': Event.Glossy,
-        'S': Event.Specular,
         'E': Event.Emitter,
-        'A': Event.Delta,
+        'S': Event.Delta,
         'N': Event.NO_EVENT,
         'U': Event.NULL,
     }

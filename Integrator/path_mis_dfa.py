@@ -96,12 +96,16 @@ class PathMisDFAIntegrator(RBIntegrator):
 
             # ADD EMITTER EVENT FOR dr.neq(ds.emitter, None) -> TRANSITION()
             curr_states = prev_states
-            emitter_mask = dr.neq(ds.emitter, None)
-            events =self.dfa.creat_emitter_events( emitter_mask)
-            next_states = self.dfa.transition(curr_states, events)
-            curr_states = next_states
-            accept_mask = self.dfa.get_accept_mask(curr_states)
-            kill_mask = self.dfa.get_kill_mask(curr_states)
+            # emitter_mask = dr.neq(ds.emitter, None)
+            # events =self.dfa.create_emitter_events( emitter_mask)
+            # next_states = self.dfa.transition(curr_states, events)
+            # curr_states = next_states
+            # accept_mask = self.dfa.get_accept_mask(curr_states)
+            # kill_mask = self.dfa.get_kill_mask(curr_states)
+            emitter_mask = dr.neq(si.emitter(scene), None)
+            events =self.dfa.create_emitter_events(emitter_mask)
+            temp_curr_states = self.dfa.transition(curr_states, events)
+            accept_mask = self.dfa.get_accept_mask(temp_curr_states)
 
             Le = dr.select(accept_mask, β * mis * ds.emitter.eval(si),0)
 
@@ -126,18 +130,23 @@ class PathMisDFAIntegrator(RBIntegrator):
             empty_ctx = mi.BSDFContext()
             bsdf_pdf_em = bsdf.pdf(empty_ctx, si, wo, active_em)
             mis_em = dr.select(ds.delta, 1, mis_weight(ds.pdf, bsdf_pdf_em))
-            bsdf_flags = [mi.BSDFFlags.Diffuse, mi.BSDFFlags.Glossy,mi.BSDFFlags.Delta]
+            bsdf_flags = self.dfa.get_NEE_flags()
 
             # DFA
             # emitter_mask = dr.neq(ds.emitter, None)
-            emitter_events =self.dfa.creat_emitter_events(active_em)
+            emitter_events =self.dfa.create_emitter_events(active_em)
 
             for flag in bsdf_flags:
                 # simulate hit a bsdf first
+                # temp_current = curr_states
+                # bsdf_events = self.dfa.single_flag_to_events(flag, dr.width(ds))
+                # temp_next = self.dfa.transition(temp_current, bsdf_events)
+                # temp_current = temp_next
                 temp_current = curr_states
-                bsdf_events = self.dfa.single_flag_to_events(flag, dr.width(ds))
-                temp_next = self.dfa.transition(temp_current, bsdf_events)
-                temp_current = temp_next
+                bsdf_events0, bsdf_events1= self.dfa.NEE_flag_to_events(flag, dr.width(ds))
+                temp_current = self.dfa.transition(temp_current, bsdf_events0)
+                temp_current = self.dfa.transition(temp_current, bsdf_events1)
+
 
                 # then hit an emitter
                 temp_next = self.dfa.transition(temp_current,emitter_events)
@@ -167,9 +176,13 @@ class PathMisDFAIntegrator(RBIntegrator):
 
 
             # ADD bsdf_sample.sample_type EVENT -> TRANSITION()
-            bsdf_events = self.dfa.flags_to_events(bsdf_sample.sampled_type)
-            next_states = self.dfa.transition(curr_states, bsdf_events)
-            curr_states = next_states
+            # bsdf_events = self.dfa.flags_to_events(bsdf_sample.sampled_type)
+            # next_states = self.dfa.transition(curr_states, bsdf_events)
+            # curr_states = next_states
+            # kill_mask = self.dfa.get_kill_mask(curr_states)
+            bsdf_events0, bsdf_events1= self.dfa.flags_to_events(bsdf_sample.sampled_type)
+            curr_states = self.dfa.transition(curr_states, bsdf_events0)
+            curr_states = self.dfa.transition(curr_states, bsdf_events1)
             kill_mask = self.dfa.get_kill_mask(curr_states)
 
 
@@ -200,7 +213,7 @@ class PathMisDFAIntegrator(RBIntegrator):
             active = active_next
 
             #DFA
-            active = active & dr.neq(True,kill_mask)
+            active = active & ~kill_mask
             prev_states = curr_states
             print(active == False)
 

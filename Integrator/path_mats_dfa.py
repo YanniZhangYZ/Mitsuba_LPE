@@ -92,12 +92,11 @@ class PathMatsDFAIntegrator(RBIntegrator):
 
             # ADD EMITTER EVENT FOR dr.neq(ds.emitter, None) -> TRANSITION()
             curr_states = prev_states
-            emitter_mask = dr.neq(ds.emitter, None)
-            events =self.dfa.creat_emitter_events( emitter_mask)
-            next_states = self.dfa.transition(curr_states, events)
-            curr_states = next_states
-            accept_mask = self.dfa.get_accept_mask(curr_states)
-            kill_mask = self.dfa.get_kill_mask(curr_states)
+
+            emitter_mask = dr.neq(si.emitter(scene), None)
+            events =self.dfa.create_emitter_events(emitter_mask)
+            temp_curr_states = self.dfa.transition(curr_states, events)
+            accept_mask = self.dfa.get_accept_mask(temp_curr_states)
 
             Le = dr.select(accept_mask, β * ds.emitter.eval(si),0)
 
@@ -106,7 +105,7 @@ class PathMatsDFAIntegrator(RBIntegrator):
             active_next = (depth + 1 < self.max_depth) & si.is_valid()
 
             #DFA
-            active_next = active_next & dr.neq(True,kill_mask)
+            # active_next = active_next & dr.neq(True,kill_mask)
 
             # ------------------ Detached BSDF sampling -------------------
 
@@ -125,9 +124,10 @@ class PathMatsDFAIntegrator(RBIntegrator):
 
 
             # ADD bsdf_sample.sample_type EVENT -> TRANSITION()
-            bsdf_events = self.dfa.flags_to_events(bsdf_sample.sampled_type)
-            next_states = self.dfa.transition(curr_states, bsdf_events)
-            curr_states = next_states
+
+            bsdf_events0, bsdf_events1= self.dfa.flags_to_events(bsdf_sample.sampled_type)
+            curr_states = self.dfa.transition(curr_states, bsdf_events0)
+            curr_states = self.dfa.transition(curr_states, bsdf_events1)
             kill_mask = self.dfa.get_kill_mask(curr_states)
 
             # Information about the current vertex needed by the next iteration
@@ -158,7 +158,7 @@ class PathMatsDFAIntegrator(RBIntegrator):
             active = active_next
 
             #DFA
-            active = active & dr.neq(True,kill_mask)
+            active = active & ~kill_mask
             prev_states = curr_states
             print(active == False)
 

@@ -1,8 +1,8 @@
 import unittest
 # from regex import Regex
-from prototype.nfa import NFA
-from prototype.parse import Verifier
-from prototype.interface import Interface
+from LPE_Engine.prototype.nfa import NFA
+from LPE_Engine.prototype.parse import Verifier
+from LPE_Engine.prototype.interface import Interface
 
 
 class TestCase(object):

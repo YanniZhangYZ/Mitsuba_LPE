@@ -9,18 +9,16 @@ from LPE_Engine.prototype.lexical_analysis import Event
 from LPE_Engine.prototype.lexical_analysis import StateUtils
 
 
-class DirectDFAIntegrator(ADIntegrator):
+class DirectLPEIntegrator(ADIntegrator):
     def __init__(self, props):
         super().__init__(props)
 
         regex = props['lpe']
-        # regex = "AE"
-        # regex = "DE"
-        # regex = "GE"
-        # regex = "G"
-        # regex = "E"
         print(regex)
         self.dfa = DrJitDFA(regex)
+        self.complement = False
+        if props.has_property('complement'):
+            self.complement = props['complement']
 
     def sample(self,
                mode: dr.ADMode,
@@ -57,14 +55,16 @@ class DirectDFAIntegrator(ADIntegrator):
         accept_mask = self.dfa.get_accept_mask(temp_curr_states)
 
         # Differentiable evaluation of intersected emitter / envmap
-        L += dr.select(accept_mask, si.emitter(scene).eval(si),0)
+        if not self.complement: #normal case
+            L += dr.select(accept_mask, si.emitter(scene).eval(si),0)
+        else: # complement case
+            L += dr.select(~accept_mask, si.emitter(scene).eval(si),0)
 
 
         # ------------------ BSDF sampling -------------------
 
         # Should we continue tracing to reach one more vertex?
         active_next = si.is_valid()
-        # active_next = active_next & dr.neq(True,kill_mask)
 
         bsdf = si.bsdf(ray)
 
@@ -82,7 +82,13 @@ class DirectDFAIntegrator(ADIntegrator):
         curr_states = self.dfa.transition(curr_states, bsdf_events0)
         curr_states = self.dfa.transition(curr_states, bsdf_events1)
         kill_mask = self.dfa.get_kill_mask(curr_states)
-        active_filter = active_bsdf & ~kill_mask
+        active_filter = active_bsdf  # complement case
+        if not self.complement: # normal case
+            active_filter = active_filter & ~kill_mask
+
+            
+
+
 
         # Illumination
         si_bsdf = scene.ray_intersect(ray_bsdf, active_filter)
@@ -94,9 +100,9 @@ class DirectDFAIntegrator(ADIntegrator):
         next_states = self.dfa.transition(curr_states, events)
         curr_states = next_states
         accept_mask = self.dfa.get_accept_mask(curr_states)
-
-        L += dr.select(accept_mask, L_bsdf * bsdf_weight, 0)
-
-        # L += L_bsdf * bsdf_weight  # MASKED FOR ACCEPTED STATES
+        if not self.complement: # normal case
+            L += dr.select(accept_mask, L_bsdf * bsdf_weight, 0)
+        else: # complement case
+            L += dr.select(~accept_mask, L_bsdf * bsdf_weight, 0)
 
         return L, active, None

@@ -5,13 +5,8 @@ from mitsuba.python.ad.integrators import direct_reparam
 from mitsuba.python.ad.integrators import emission_reparam
 from direct import DirectIntegrator
 from direct_flag import DirectFlagIntegrator
-from direct_dfa import DirectDFAIntegrator
+from direct_LPE import DirectLPEIntegrator
 from direct_mis import DirectMISIntegrator
-from  path_mis import PathMisIntegrator
-from  path_mats_dfa import PathMatsDFAIntegrator
-from  path_mats import PathMatsIntegrator
-from  path_mis_dfa import PathMisDFAIntegrator
-# from LPE_Engine.drjit_utils import DrJitDFA
 
 
 def cornell_box_AD():
@@ -182,150 +177,208 @@ def cornell_box_AD():
 
 
 mi.set_variant('llvm_ad_rgb')
-# mi.register_integrator(
-#     "direct_reparam", lambda props: DirectReparamIntegrator(props))
 mi.register_integrator(
     "direct", lambda props: DirectIntegrator(props))
 mi.register_integrator(
     "directFlag", lambda props:  DirectFlagIntegrator(props))
 mi.register_integrator(
-    "directDFA", lambda props:  DirectDFAIntegrator(props))
+    "directLPE", lambda props:  DirectLPEIntegrator(props))
 mi.register_integrator(
     "directMIS", lambda props:  DirectMISIntegrator(props))
-mi.register_integrator(
-    "pmis", lambda props:  PathMisIntegrator(props))
-mi.register_integrator(
-    "pmatsDFA", lambda props:  PathMatsDFAIntegrator(props))
 
-mi.register_integrator(
-    "pmats", lambda props:  PathMatsIntegrator(props))
-
-mi.register_integrator(
-    "pmisDFA", lambda props:  PathMisDFAIntegrator(props))
 
 
 scene = mi.load_dict(cornell_box_AD())
 
 inegrator1 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'DRE',
-        'max_depth': 10,
+        'type': 'path',
+        'max_depth': 2,
     })
 img1 = mi.render(scene, integrator=inegrator1)
+name = 'path_2'
+mi.Bitmap(img1).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img1)
+
 
 inegrator2 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'DR.+E',
-        'max_depth':10,
+        'type': 'direct',
     })
 img2 = mi.render(scene, integrator=inegrator2)
+name = '0_direct'
+mi.Bitmap(img2).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img2)
+
 
 inegrator3 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'DT.*E',
-        'max_depth': 10,
+        'type': 'directLPE',
+        'lpe':'D.E',
     })
 img3 = mi.render(scene, integrator=inegrator3)
+name = '0_direct_D.E'
+mi.Bitmap(img3).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img3)
+
 
 inegrator4 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'SRE',
-        'max_depth': 10,
-        
+        'type': 'directLPE',
+        'lpe':'G.E',
     })
 img4 = mi.render(scene, integrator=inegrator4)
+name = '0_direct_G.E'
+mi.Bitmap(img4).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img4)
+
 
 inegrator5 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'SR.+E',
-        'max_depth': 10,
+        'type': 'directLPE',
+        'lpe':'S.E',
     })
 img5 = mi.render(scene, integrator=inegrator5)
+name = '0_direct_S.E'
+mi.Bitmap(img5).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img5)
+
 
 inegrator6 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'ST.*E',
-        'max_depth': 10,
-        
+       'type': 'directLPE',
+        'lpe':'E',     
     })
 img6 = mi.render(scene, integrator=inegrator6)
+name = '0_direct_E'
+mi.Bitmap(img6).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img6)
+
+
+name = '0_direct_all'
+mi.Bitmap(img3+img4+img5+img6).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img3+img4+img5+img6)
+
+
+# =============================================================
+#       Flag
+# =============================================================
+
 
 inegrator7 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'E',
-        'max_depth': 10,
+        'type': 'directFlag',
+        'flag':1,
     })
 img7 = mi.render(scene, integrator=inegrator7)
+name = '0_flag_D'
+mi.Bitmap(img7).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img7)
+
 
 inegrator8 = mi.load_dict(
     {
-        'type': 'pmisDFA',
-        'lpe':'G.*E',
-        'max_depth': 10,
-        
+        'type': 'directFlag',
+        'flag':2,
     })
 img8 = mi.render(scene, integrator=inegrator8)
+name = '0_flag_S'
+mi.Bitmap(img8).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img8)
 
-# inegrator9 = mi.load_dict(
-#     {
-#         'type': 'pmisDFA',
-#         'lpe': 'A+D*E',
-#         'max_depth': 10,
-#     })
-# img9 = mi.render(scene, integrator=inegrator9)
+
+inegrator9 = mi.load_dict(
+    {
+        'type': 'directFlag',
+        'flag':3,
+    })
+img9 = mi.render(scene, integrator=inegrator9)
+name = '0_flag_G'
+mi.Bitmap(img9).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img9)
+
 
 inegrator10 = mi.load_dict(
     {
-        'type': 'path',
-        # 'lpe': 'A*G*E',
-        'max_depth': 10,
+        'type': 'emission_reparam',
     })
 img10 = mi.render(scene, integrator=inegrator10)
+name = '0_flag_E'
+mi.Bitmap(img10).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img10)
 
 
 
-mi.Bitmap(img1).write('5_mis_directDiffuse.exr')
-mi.Bitmap(img2).write('5_mis_indirectDiffuse.exr')
-mi.Bitmap(img3).write('5_mis_subsurface.exr')
-mi.Bitmap(img4).write('5_mis_directSpecular.exr')
-mi.Bitmap(img5).write('5_mis_directSpecular.exr')
-mi.Bitmap(img6).write('5_mis_transmissive.exr')
-mi.Bitmap(img7).write('5_mis_emissive.exr')
-mi.Bitmap(img8).write('5_mis_glossy.exr')
-mi.Bitmap(img1+img2+img3+img4+img5+img6+img7+img8).write('5_mis_all.exr')
-mi.Bitmap(img10).write('path_10.exr')
+name = '0_flag_all'
+mi.Bitmap(img7+img8+img9+img10).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img7+img8+img9+img10)
 
 
+# =============================================================
+#       complement
+# =============================================================
 
 
+inegrator11 = mi.load_dict(
+    {
+        'type': 'directLPE',
+        'lpe':'D.E',
+        'complement':True,
+    })
+img11 = mi.render(scene, integrator=inegrator11)
+name = '0_C_direct_D.E'
+mi.Bitmap(img11).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img11)
 
-# mi.Bitmap(img1).write('validation_report/mis2.exr')
-# mi.Bitmap(img2).write('validation_report/mis6.exr')
-# mi.Bitmap(img3).write('validation_report/mis10.exr')
-# mi.Bitmap(img4).write('validation_report/mis_DE.exr')
-# mi.Bitmap(img5).write('validation_report/mis_AE.exr')
-# mi.Bitmap(img6).write('validation_report/mis_GE.exr')
-# mi.Bitmap(img7).write('validation_report/mis_E.exr')
-# mi.Bitmap(img8).write('validation_report/mis_D+E10.exr')
-# mi.Bitmap(img9).write('validation_report/mis_A+D*E10.exr')
-# mi.Bitmap(img10).write('validation_report/mis_A*G*E10.exr')
-
-# mi.Bitmap(img4+img5+img6+img7).write('validation_report/mis_all.exr')
-# mi.Bitmap(img4+img6+img8+img10).write('validation_report/flag_all.exr')
-
-# mi.Bitmap(img1).write('try_pmis_DE2.exr')
-# mi.Bitmap(img1 - img2).write('try_diff_D*E.exr')
-# mi.Bitmap(img2 - img1).write('try_diff_D*E2.exr')
-# mi.Bitmap(img3).write('try_pmats_notDE.exr')
-# mi.Bitmap(img4).write('ref_direct_emitter.exr')
-# mi.Bitmap(img2).write('pmis_lobe_6.exr')
+name = '0_C_direct_D.E_all'
+mi.Bitmap(img11+img3).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img11+img3)
 
 
+inegrator12 = mi.load_dict(
+    {
+        'type': 'directLPE',
+        'lpe':'G.E',
+        'complement':True,
+    })
+img12 = mi.render(scene, integrator=inegrator12)
+name = '0_C_direct_G.E'
+mi.Bitmap(img12).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img12)
 
+name = '0_C_direct_G.E_all'
+mi.Bitmap(img12+img4).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img12+img4)
+
+
+inegrator13 = mi.load_dict(
+    {
+        'type': 'directLPE',
+        'lpe':'S.E',
+        'complement':True,
+    })
+img13 = mi.render(scene, integrator=inegrator13)
+name = '0_C_direct_S.E'
+mi.Bitmap(img13).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img13)
+
+name = '0_C_direct_S.E_all'
+mi.Bitmap(img13+img5).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img13+img5)
+
+
+inegrator14 = mi.load_dict(
+    {
+       'type': 'directLPE',
+        'lpe':'E',   
+        'complement':True,  
+    })
+img14 = mi.render(scene, integrator=inegrator14)
+name = '0_C_direct_E'
+mi.Bitmap(img14).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img14)
+
+
+name = '0_C_direct_E_all'
+mi.Bitmap(img14+img6).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img14+img6)

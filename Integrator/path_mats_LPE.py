@@ -96,7 +96,6 @@ class PathMatsLPEIntegrator(RBIntegrator):
             temp_curr_states = self.dfa.transition(curr_states, events)
             accept_mask = self.dfa.get_accept_mask(temp_curr_states)
 
-            # Le = dr.select(accept_mask, β * ds.emitter.eval(si),0)
             if not self.complement: # normal case
                 Le = dr.select(accept_mask, β * ds.emitter.eval(si),0)
             else: # complement case
@@ -106,8 +105,6 @@ class PathMatsLPEIntegrator(RBIntegrator):
             # Should we continue tracing to reach one more vertex?
             active_next = (depth + 1 < self.max_depth) & si.is_valid()
 
-            #DFA
-            # active_next = active_next & dr.neq(True,kill_mask)
 
             # ------------------ Detached BSDF sampling -------------------
 
@@ -118,7 +115,6 @@ class PathMatsLPEIntegrator(RBIntegrator):
 
             # ---- Update loop variables based on current interaction -----
 
-            # L = (L + Le + Lr_dir)
             L = (L + Le)
             ray = si.spawn_ray(si.to_world(bsdf_sample.wo))
             η *= bsdf_sample.eta

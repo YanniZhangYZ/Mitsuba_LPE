@@ -2,7 +2,7 @@ from LPE_Engine.prototype.nfa import NFA
 from LPE_Engine.prototype.dfa import DFA
 from LPE_Engine.prototype.parse import Verifier
 from LPE_Engine.prototype.lexical_analysis import Grammar
-from test import TestCase
+from test_LPE_NFA import TestCase
 import unittest
 
 
@@ -15,26 +15,26 @@ testLists.append(TestCase("GGGGSSSSSDE", "[GS].*DE", True))
 
 
 
-# testLists.append(TestCase("CT", "C?T", True))
-# testLists.append(TestCase("TE", "R?TE?", True))
-# testLists.append(TestCase("RTSVDDD", "R*T.V?D+", True))
-# testLists.append(TestCase("RVT", "R.T", True))
-# testLists.append(TestCase("RT", "RT", True))
-# testLists.append(TestCase("RV", "RT", False))
-# testLists.append(TestCase("R", "T+", False))
-# testLists.append(TestCase("T", "T+", True))
-# testLists.append(TestCase("R", "R?", True))
-# testLists.append(TestCase("RRT", "R?T", False))
-# testLists.append(TestCase("R", "R*T*", True))
-# testLists.append(TestCase("RRT", "R*T", True))
-# testLists.append(TestCase("TTT", "R*T", False))
-# testLists.append(TestCase("R", "R|T", True))
-# testLists.append(TestCase("TTT", "R|T", False))
-# testLists.append(TestCase("T", "[^R]", True))
-# testLists.append(TestCase("TVGD", "[^R]*", True))
-# testLists.append(TestCase("RRR", "R*|D*", True))
-# testLists.append(TestCase("DDD", "R*|D*", True))
-# testLists.append(TestCase("RRD", "R*|D*", False))
+testLists.append(TestCase("CT", "C?T", True))
+testLists.append(TestCase("TE", "R?TE?", True))
+testLists.append(TestCase("RTSVDDD", "R*T.V?D+", True))
+testLists.append(TestCase("RVT", "R.T", True))
+testLists.append(TestCase("RT", "RT", True))
+testLists.append(TestCase("RV", "RT", False))
+testLists.append(TestCase("R", "T+", False))
+testLists.append(TestCase("T", "T+", True))
+testLists.append(TestCase("R", "R?", True))
+testLists.append(TestCase("RRT", "R?T", False))
+testLists.append(TestCase("R", "R*T*", True))
+testLists.append(TestCase("RRT", "R*T", True))
+testLists.append(TestCase("TTT", "R*T", False))
+testLists.append(TestCase("R", "R|T", True))
+testLists.append(TestCase("TTT", "R|T", False))
+testLists.append(TestCase("T", "[^R]", True))
+testLists.append(TestCase("TVGD", "[^R]*", True))
+testLists.append(TestCase("RRR", "R*|D*", True))
+testLists.append(TestCase("DDD", "R*|D*", True))
+testLists.append(TestCase("RRD", "R*|D*", False))
 
 
 class TestDFA(unittest.TestCase):

@@ -1,17 +1,7 @@
-from prototype.nfa import NFA
-from prototype.parse import Verifier
-from prototype.lexical_analysis import Grammar
+from LPE_Engine.prototype.nfa import NFA
+from LPE_Engine.prototype.parse import Verifier
+from LPE_Engine.prototype.lexical_analysis import Grammar
 import unittest
-
-# events_grammar = {
-#         'R': Event.Reflection,
-#         'T': Event.Transmission,
-#         'V': Event.Volume,
-#         'D': Event.Diffuse,
-#         'G': Event.Glossy,
-#         'S': Event.Specular,
-#         'N': Event.NO_EVENT,
-#     }
 
 
 class TestCase(object):

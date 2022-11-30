@@ -99,7 +99,6 @@ class DirectFlagIntegrator(ADIntegrator):
         # ------------------ BSDF sampling -------------------
 
         # Should we continue tracing to reach one more vertex?
-        # active_next = si.is_valid()
         active_next = si.is_valid()
         bsdf = si.bsdf(ray)
 

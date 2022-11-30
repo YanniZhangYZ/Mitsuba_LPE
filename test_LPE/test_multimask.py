@@ -1,55 +1,12 @@
-from prototype.nfa import NFA
-from prototype.dfa import DFA
-from prototype.parse import Verifier
-from prototype.lexical_analysis import Grammar
-from prototype.lexical_analysis import StateUtils
-from prototype.lexical_analysis import Event
-from test import TestCase
+from LPE_Engine.prototype.nfa import NFA
+from LPE_Engine.prototype.dfa import DFA
+from LPE_Engine.prototype.parse import Verifier
+from LPE_Engine.prototype.lexical_analysis import Grammar
+from LPE_Engine.prototype.lexical_analysis import StateUtils
+from LPE_Engine.prototype.lexical_analysis import Event
+from test_LPE_NFA import TestCase
 import unittest
 
-
-# regex = "R|T"
-# input = "TTT"
-
-# nfa = NFA(regex)
-# v = Verifier()
-# g = Grammar()
-# dfa = DFA()
-# enum_input = g.check_translate_event_string_simple(input)
-# dfa.convert_to_dfa(nfa.start_node)
-# dfa.get_edges()
-# for e in dfa.edges:
-#     print("origin: " + str(e.origin.node_ID)+" next: " +
-#           str(e.next.node_ID) + " event: " + str(e.event))
-#     print(e.next.is_accept_state)
-
-# print("=======================")
-
-
-# state_ID = 1
-# result = False
-# for ch in enum_input:
-#     flag = False
-#     for e in dfa.edges:
-#         if state_ID == e.origin.node_ID and ch == e.event:
-#             if e.next.is_accept_state == StateUtils.ACCEPT_STATE:
-#                 print("origin: " + str(state_ID)+" next: " +
-#                       str(e.next.node_ID) + " event: " + str(ch))
-#                 print("hello")
-#                 result = True
-#                 break
-#             state_ID = e.next.node_ID
-#             flag = True
-#             print("origin: " + str(e.origin.node_ID)+" next: " +
-#                   str(state_ID) + " event: " + str(ch))
-#             break
-#     if flag == False:
-#         print("hi")
-#         break
-#     if result == True:
-#         break
-
-# print(result)
 
 testLists = []
 testLists.append(TestCase("T", "R?T", True))

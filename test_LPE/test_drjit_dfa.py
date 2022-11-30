@@ -3,7 +3,6 @@ from LPE_Engine.drjit_utils.drjit_dfa import DrJitDFA
 
 from LPE_Engine.prototype.lexical_analysis import Event
 import numpy as np
-import drjit as dr
 import mitsuba as mi
 
 # A?	0 or 1 occurrence of A

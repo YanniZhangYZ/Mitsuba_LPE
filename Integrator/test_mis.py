@@ -210,16 +210,16 @@ scene = mi.load_dict(cornell_box_AD())
 # mi.util.write_bitmap('report/'+name+'.png', img2)
 
 
-# inegrator3 = mi.load_dict(
-#     {
-#         'type': 'pmisLPE',
-#         'lpe':'D.E',
-#         'max_depth': 2,
-#     })
-# img3 = mi.render(scene, integrator=inegrator3)
-# name = '2_mis2_D.E'
-# mi.Bitmap(img3).write(name+'.exr')
-# mi.util.write_bitmap('report/'+name+'.png', img3)
+inegrator3 = mi.load_dict(
+    {
+        'type': 'pmisLPE',
+        'lpe':'D.E',
+        'max_depth': 2,
+    })
+img3 = mi.render(scene, integrator=inegrator3)
+name = '2_mis2_D.E'
+mi.Bitmap(img3).write(name+'.exr')
+mi.util.write_bitmap('report/'+name+'.png', img3)
 
 
 # inegrator4 = mi.load_dict(
@@ -497,80 +497,80 @@ scene = mi.load_dict(cornell_box_AD())
 
 
 
-inegrator21 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'E',     
-        'max_depth': 10,
-    })
-img21 = mi.render(scene, integrator=inegrator21)
-name = '3_emissive'
-mi.Bitmap(img21).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img21)
+# inegrator21 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'E',     
+#         'max_depth': 10,
+#     })
+# img21 = mi.render(scene, integrator=inegrator21)
+# name = '3_emissive'
+# mi.Bitmap(img21).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img21)
 
-inegrator22 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'DRE',     
-        'max_depth': 10,
-    })
-img22 = mi.render(scene, integrator=inegrator22)
-name = '3_directDiffuse'
-mi.Bitmap(img22).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img22)
+# inegrator22 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'DRE',     
+#         'max_depth': 10,
+#     })
+# img22 = mi.render(scene, integrator=inegrator22)
+# name = '3_directDiffuse'
+# mi.Bitmap(img22).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img22)
 
-inegrator23 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'DR.+E',     
-        'max_depth': 10,
-    })
-img23 = mi.render(scene, integrator=inegrator23)
-name = '3_indirectDiffuse'
-mi.Bitmap(img23).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img23)
+# inegrator23 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'DR.+E',     
+#         'max_depth': 10,
+#     })
+# img23 = mi.render(scene, integrator=inegrator23)
+# name = '3_indirectDiffuse'
+# mi.Bitmap(img23).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img23)
 
-inegrator24 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'DT.*E',     
-        'max_depth': 10,
-    })
-img24 = mi.render(scene, integrator=inegrator24)
-name = '3_subsurface'
-mi.Bitmap(img24).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img24)
+# inegrator24 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'DT.*E',     
+#         'max_depth': 10,
+#     })
+# img24 = mi.render(scene, integrator=inegrator24)
+# name = '3_subsurface'
+# mi.Bitmap(img24).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img24)
 
 
-inegrator25 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'SRE',     
-        'max_depth': 10,
-    })
-img25 = mi.render(scene, integrator=inegrator25)
-name = '3_directSpecular'
-mi.Bitmap(img25).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img25)
+# inegrator25 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'SRE',     
+#         'max_depth': 10,
+#     })
+# img25 = mi.render(scene, integrator=inegrator25)
+# name = '3_directSpecular'
+# mi.Bitmap(img25).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img25)
 
-inegrator26 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'SR.+E',     
-        'max_depth': 10,
-    })
-img26 = mi.render(scene, integrator=inegrator26)
-name = '3_indirectSpecular'
-mi.Bitmap(img26).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img26)
+# inegrator26 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'SR.+E',     
+#         'max_depth': 10,
+#     })
+# img26 = mi.render(scene, integrator=inegrator26)
+# name = '3_indirectSpecular'
+# mi.Bitmap(img26).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img26)
 
-inegrator27 = mi.load_dict(
-    {
-        'type': 'pmisLPE',
-        'lpe':'ST.*E',     
-        'max_depth': 10,
-    })
-img27 = mi.render(scene, integrator=inegrator27)
-name = '3_transmissive'
-mi.Bitmap(img27).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img27)
+# inegrator27 = mi.load_dict(
+#     {
+#         'type': 'pmisLPE',
+#         'lpe':'ST.*E',     
+#         'max_depth': 10,
+#     })
+# img27 = mi.render(scene, integrator=inegrator27)
+# name = '3_transmissive'
+# mi.Bitmap(img27).write(name+'.exr')
+# mi.util.write_bitmap('report/'+name+'.png', img27)

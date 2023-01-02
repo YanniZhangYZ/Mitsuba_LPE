@@ -13,7 +13,7 @@ mi.set_variant('llvm_ad_rgb')
 
 
 class DrJitDFA(object):
-    def __init__(self, regex,get_complement=False):
+    def __init__(self, regex):
         self.regex = regex
         self.flag_group_list = {mi.BSDFFlags.Reflection: Event.Reflection.value,
                                 mi.BSDFFlags.Diffuse: Event.Diffuse.value,
@@ -31,10 +31,7 @@ class DrJitDFA(object):
         self.g = Grammar()
         self.dfa = DFA()
         self.dfa.convert_to_dfa(self.nfa.start_node)
-        if get_complement:
-            self.dfa.get_complement_edges()
-        else:
-            self.dfa.get_edges()
+        self.dfa.get_edges()
 
     # Param:
         # events is traslated event batch

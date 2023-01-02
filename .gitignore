@@ -2,7 +2,9 @@
 .ipynb_checkpoints
 __pycache__/
 .DS_Store
-*.exr
 validation_report
 report
 try
+try_pics
+messy_testing_scene
+demo

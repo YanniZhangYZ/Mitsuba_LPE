@@ -190,7 +190,7 @@ inegrator1 = mi.load_dict(
 img1 = mi.render(scene, integrator=inegrator1)
 name = 'path_10'
 mi.Bitmap(img1).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img1)
+mi.util.write_bitmap(name+'.png', img1)
 
 
 inegrator2 = mi.load_dict(
@@ -201,7 +201,7 @@ inegrator2 = mi.load_dict(
 img2 = mi.render(scene, integrator=inegrator2)
 name = '1_mats'
 mi.Bitmap(img2).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img2)
+mi.util.write_bitmap(name+'.png', img2)
 
 
 inegrator3 = mi.load_dict(
@@ -213,7 +213,7 @@ inegrator3 = mi.load_dict(
 img3 = mi.render(scene, integrator=inegrator3)
 name = '1_mats2_D.E'
 mi.Bitmap(img3).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img3)
+mi.util.write_bitmap(name+'.png', img3)
 
 
 inegrator4 = mi.load_dict(
@@ -225,7 +225,7 @@ inegrator4 = mi.load_dict(
 img4 = mi.render(scene, integrator=inegrator4)
 name = '1_mats2_G.E'
 mi.Bitmap(img4).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img4)
+mi.util.write_bitmap(name+'.png', img4)
 
 
 inegrator5 = mi.load_dict(
@@ -237,7 +237,7 @@ inegrator5 = mi.load_dict(
 img5 = mi.render(scene, integrator=inegrator5)
 name = '1_mats2_S.E'
 mi.Bitmap(img5).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img5)
+mi.util.write_bitmap(name+'.png', img5)
 
 
 inegrator6 = mi.load_dict(
@@ -249,12 +249,12 @@ inegrator6 = mi.load_dict(
 img6 = mi.render(scene, integrator=inegrator6)
 name = '1_mats2_E'
 mi.Bitmap(img6).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img6)
+mi.util.write_bitmap(name+'.png', img6)
 
 
 name = '1_mats2_all'
 mi.Bitmap(img3+img4+img5+img6).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img3+img4+img5+img6)
+mi.util.write_bitmap(name+'.png', img3+img4+img5+img6)
 
 
 # =============================================================
@@ -271,7 +271,7 @@ inegrator7 = mi.load_dict(
 img7 = mi.render(scene, integrator=inegrator7)
 name = '1_mats_D'
 mi.Bitmap(img7).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img7)
+mi.util.write_bitmap(name+'.png', img7)
 
 
 inegrator8 = mi.load_dict(
@@ -283,7 +283,7 @@ inegrator8 = mi.load_dict(
 img8 = mi.render(scene, integrator=inegrator8)
 name = '1_mats_S'
 mi.Bitmap(img8).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img8)
+mi.util.write_bitmap(name+'.png', img8)
 
 
 inegrator9 = mi.load_dict(
@@ -295,7 +295,7 @@ inegrator9 = mi.load_dict(
 img9 = mi.render(scene, integrator=inegrator9)
 name = '1_mats_G'
 mi.Bitmap(img9).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img9)
+mi.util.write_bitmap(name+'.png', img9)
 
 
 inegrator10 = mi.load_dict(
@@ -307,13 +307,13 @@ inegrator10 = mi.load_dict(
 img10 = mi.render(scene, integrator=inegrator10)
 name = '1_mats_E'
 mi.Bitmap(img10).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img10)
+mi.util.write_bitmap(name+'.png', img10)
 
 
 
 name = '1_mats_all'
 mi.Bitmap(img7+img8+img9+img10).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img7+img8+img9+img10)
+mi.util.write_bitmap(name+'.png', img7+img8+img9+img10)
 
 
 # =============================================================
@@ -331,11 +331,11 @@ inegrator11 = mi.load_dict(
 img11 = mi.render(scene, integrator=inegrator11)
 name = '1_C_mats_D.*E'
 mi.Bitmap(img11).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img11)
+mi.util.write_bitmap(name+'.png', img11)
 
 name = '1_C_mats_D.*E_all'
 mi.Bitmap(img11+img7).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img11+img7)
+mi.util.write_bitmap(name+'.png', img11+img7)
 
 
 inegrator12 = mi.load_dict(
@@ -348,11 +348,11 @@ inegrator12 = mi.load_dict(
 img12 = mi.render(scene, integrator=inegrator12)
 name = '1_C_mats_G.*E'
 mi.Bitmap(img12).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img12)
+mi.util.write_bitmap(name+'.png', img12)
 
 name = '1_C_mats_G.*E_all'
 mi.Bitmap(img12+img9).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img12+img9)
+mi.util.write_bitmap(name+'.png', img12+img9)
 
 
 inegrator13 = mi.load_dict(
@@ -365,11 +365,11 @@ inegrator13 = mi.load_dict(
 img13 = mi.render(scene, integrator=inegrator13)
 name = '1_C_mats_S.*E'
 mi.Bitmap(img13).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img13)
+mi.util.write_bitmap(name+'.png', img13)
 
 name = '1_C_mats_S.*E_all'
 mi.Bitmap(img13+img8).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img13+img8)
+mi.util.write_bitmap(name+'.png', img13+img8)
 
 
 inegrator14 = mi.load_dict(
@@ -382,12 +382,12 @@ inegrator14 = mi.load_dict(
 img14 = mi.render(scene, integrator=inegrator14)
 name = '1_C_mats_E'
 mi.Bitmap(img14).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img14)
+mi.util.write_bitmap(name+'.png', img14)
 
 
 name = '1_C_mats_E_all'
 mi.Bitmap(img14+img10).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img14+img10)
+mi.util.write_bitmap(name+'.png', img14+img10)
 
 
 
@@ -407,7 +407,7 @@ inegrator15 = mi.load_dict(
 img15 = mi.render(scene, integrator=inegrator15)
 name = '1_C_mats_D.S.*E'
 mi.Bitmap(img15).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img15)
+mi.util.write_bitmap(name+'.png', img15)
 
 
 inegrator16 = mi.load_dict(
@@ -421,11 +421,11 @@ inegrator16 = mi.load_dict(
 img16 = mi.render(scene, integrator=inegrator16)
 name = '1_mats_D.S.*E'
 mi.Bitmap(img16).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img16)
+mi.util.write_bitmap(name+'.png', img16)
 
 name = '1_C_mats_D.S.*E_all'
 mi.Bitmap(img16+img15).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img16+img15)
+mi.util.write_bitmap(name+'.png', img16+img15)
 
 
 
@@ -439,7 +439,7 @@ inegrator17 = mi.load_dict(
 img17 = mi.render(scene, integrator=inegrator17)
 name = '1_C_mats_G.D.*E'
 mi.Bitmap(img17).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png',img17)
+mi.util.write_bitmap(name+'.png',img17)
 
 
 inegrator18 = mi.load_dict(
@@ -452,11 +452,11 @@ inegrator18 = mi.load_dict(
 img18 = mi.render(scene, integrator=inegrator18)
 name = '1_mats_G.D.*E'
 mi.Bitmap(img18).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img18)
+mi.util.write_bitmap(name+'.png', img18)
 
 name = '1_C_mats_G.D.*E_all'
 mi.Bitmap(img18+img17).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img18+img17)
+mi.util.write_bitmap(name+'.png', img18+img17)
 
 
 
@@ -470,7 +470,7 @@ inegrator19 = mi.load_dict(
 img19 = mi.render(scene, integrator=inegrator19)
 name = '1_C_mats_S.D.*E'
 mi.Bitmap(img19).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png',img19)
+mi.util.write_bitmap(name+'.png',img19)
 
 
 inegrator20 = mi.load_dict(
@@ -483,11 +483,11 @@ inegrator20 = mi.load_dict(
 img20 = mi.render(scene, integrator=inegrator20)
 name = '1_mats_S.D.*E'
 mi.Bitmap(img20).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img20)
+mi.util.write_bitmap(name+'.png', img20)
 
 name = '1_C_mats_S.D.*E_all'
 mi.Bitmap(img20+img19).write(name+'.exr')
-mi.util.write_bitmap('report/'+name+'.png', img20+img19)
+mi.util.write_bitmap(name+'.png', img20+img19)
 
 
 

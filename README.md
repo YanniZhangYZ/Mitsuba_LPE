@@ -54,7 +54,7 @@ To run the project, [Mitsuba3](https://mitsuba.readthedocs.io/en/stable/) and [D
 └── README.md
 ```
 
-- `Integrator`: This folder contains various integrators writing in python and LPE integrator testing script. Files whoes name ends with `_LPE` are LPE integrators. `test_direct.py` tests the LPE direct mats integrator. `test_mats.py` test the LPE mats path tracer. `test_mis.py` tests the LPE mis path tracer.
+- `Integrator`: This folder contains various integrators writing in python and LPE integrator testing scripts. Files whose name ends with `_LPE` are LPE integrators. `test_direct.py` tests the LPE direct mats integrator. `test_mats.py` test the LPE mats path tracer. `test_mis.py` tests the LPE mis path tracer.
 - `LPE_Engine`: This folder contains the code for covnerting regular expression to DFA (in `prototype`) and LPE Mitsuba interface(in `drjit_utils`). One of the core function in this project `transition()` is defined in `LPE_Engine/drjit_utils/drjit_dfa.py`.
 - `test_LPE`: This folder contains test scripts for LPE engine.
 - `testing_scene`: This folder contains the scenes used for functionality demonstration in the final report. By running the `run.py` in each scene's folder, people can get the same images shown in the final report.

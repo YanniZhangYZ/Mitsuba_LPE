@@ -82,5 +82,71 @@ inegrator0 = mi.load_dict( {
 })
 ~~~
 
+## Gallery
+
+### Modern Hall
+
+Different layers of ’Modern Hall’ by <a href=" https://benedikt-bitterli.me/resources/">NewSee2l035</a>, generated using the light path expression (LPE) module developed in this project. This scene, which features fine details and a variety of materials, is rendered with a maximum depth of 65 and a sample count of 512.
+
+<table border="1">
+        <tr>
+            <td><img src="Gallery_img/staircase2/s2_origin.png" alt="Original"><p>Original Image</p></td>
+            <td><img src="Gallery_img/staircase2/s2_directDiffuse.png" alt="Image 2"><p>Direct Diffuse</p></td>
+            <td><img src="Gallery_img/staircase2/s2_indirectDiffuse.png" alt="Image 3"><p>Indirect Diffuse</p></td>
+        </tr>
+        <tr>
+            <td><img src="Gallery_img/staircase2/s2_glossy.png" alt="Image 4"><p>Glossy</p></td>
+            <td><img src="Gallery_img/staircase2/s2_directSpecular.png" alt="Image 5"><p>Direct Specular</p></td>
+            <td><img src="Gallery_img/staircase2/s2_indirectSpecular.png" alt="Image 6"><p>Indirect Specular</p></td>
+        </tr>
+        <tr>
+            <td><img src="Gallery_img/staircase2/s2_emissive.png" alt="Image 7"><p>Emissive</p></td>
+            <td><img src="Gallery_img/staircase2/s2_transmissive.png" alt="Image 8"><p>Transmissive</p></td>
+            <td><img src="Gallery_img/staircase2/s2_transmissive_comp.png" alt="Image 9"><p>Complement of transmissive</p></td>
+        </tr>
+</table>
+
+### Country Kitchen
+
+Different layers of ’Country Kitchen’ by <a href=" https://benedikt-bitterli.me/resources/">Jay-Artist</a>, filtered by the LPE module developed in this project. Images are rendered with a maximum depth of 65 and a sample count of 512.
+
+<table border="1">
+        <tr>
+            <td><img src="Gallery_img/living-room/origin.png" alt="Original"><p>Original Image</p></td>
+            <td><img src="Gallery_img/living-room/directDiffuse.png" alt="Image 2"><p>Direct Diffuse</p></td>
+            <td><img src="Gallery_img/living-room/indirectDiffuse.png" alt="Image 3"><p>Indirect Diffuse</p></td>
+        </tr>
+        <tr>
+            <td><img src="Gallery_img/living-room/glossy.png" alt="Image 4"><p>Glossy</p></td>
+            <td><img src="Gallery_img/living-room/directSpecular.png" alt="Image 5"><p>Direct Specular</p></td>
+            <td><img src="Gallery_img/living-room/indirectSpecular.png" alt="Image 6"><p>Indirect Specular</p></td>
+        </tr>
+        <tr>
+            <td><img src="Gallery_img/living-room/emissive.png" alt="Image 7"><p>Emissive</p></td>
+            <td><img src="Gallery_img/living-room/transmissive.png" alt="Image 8"><p>Transmissive</p></td>
+        </tr>
+</table>
+
+### Living room
+
+Different layers of ’Grey & White Room’ by <a href=" https://benedikt-bitterli.me/resources/">Wig42</a>, filtered by the LPE module developed in this project. Images are rendered with a maximum depth of 65 and a sample count of 512.
+
+<table border="1">
+        <tr>
+            <td><img src="Gallery_img/kitchen/origin.png" alt="Original"><p>Original Image</p></td>
+            <td><img src="Gallery_img/kitchen/directDiffuse.png" alt="Image 2"><p>Direct Diffuse</p></td>
+            <td><img src="Gallery_img/kitchen/indirectDiffuse.png" alt="Image 3"><p>Indirect Diffuse</p></td>
+        </tr>
+        <tr>
+            <td><img src="Gallery_img/kitchen/glossy.png" alt="Image 4"><p>Glossy</p></td>
+            <td><img src="Gallery_img/kitchen/directSpecular.png" alt="Image 5"><p>Direct Specular</p></td>
+            <td><img src="Gallery_img/kitchen/indirectSpecular.png" alt="Image 6"><p>Indirect Specular</p></td>
+        </tr>
+        <tr>
+            <td><img src="Gallery_img/kitchen/emissive.png" alt="Image 7"><p>Emissive</p></td>
+            <td><img src="Gallery_img/kitchen/transmissive.png" alt="Image 8"><p>Transmissive</p></td>
+        </tr>
+</table>
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

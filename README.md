@@ -61,6 +61,30 @@ To run the project, [Mitsuba3](https://mitsuba.readthedocs.io/en/stable/) and [D
 
 ## Usage
 
+### Supported grammar
+
+LPE event | Description
+-------|------
+   R   |  Reflection
+   T   |  Transmission  
+   D   |  Diffuse  
+   G   |  Glossy
+   S   |  Delta  
+   E   |  Emitter
+
+### Summary of typical LPEs
+
+LPE  | Description
+-------|------
+   DRE   |  Direct Diffuse
+   DR.+E   |  Indirect diffuse  
+   SRE   |  Direct specular  
+   SR.+E   |  Indirect specular
+   ST.*E   |  Transmissive  
+   GR.*E   |  Glossy
+
+### How to use LPE integrator in XML script
+
 There are two ways to use the LPE integrator in XML script. The first is to specify the LPE directly, which will produce an image filtered by the given LPE.
 
 ~~~python

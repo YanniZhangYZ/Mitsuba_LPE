@@ -86,7 +86,7 @@ inegrator0 = mi.load_dict( {
 
 ### Modern Hall
 
-Different layers of ’Modern Hall’ by <a href=" https://benedikt-bitterli.me/resources/">NewSee2l035</a>, generated using the light path expression (LPE) module developed in this project. This scene, which features fine details and a variety of materials, is rendered with a maximum depth of 65 and a sample count of 512.
+Different layers of ’Modern Hall’ by [NewSee2l035](https://benedikt-bitterli.me/resources/), generated using the light path expression (LPE) module developed in this project. This scene, which features fine details and a variety of materials, is rendered with a maximum depth of 65 and a sample count of 512.
 
 <table border="1">
         <tr>
@@ -108,7 +108,7 @@ Different layers of ’Modern Hall’ by <a href=" https://benedikt-bitterli.me/
 
 ### Country Kitchen
 
-Different layers of ’Country Kitchen’ by <a href=" https://benedikt-bitterli.me/resources/">Jay-Artist</a>, filtered by the LPE module developed in this project. Images are rendered with a maximum depth of 65 and a sample count of 512.
+Different layers of ’Country Kitchen’ by [Jay-Artist](https://benedikt-bitterli.me/resources/), filtered by the LPE module developed in this project. Images are rendered with a maximum depth of 65 and a sample count of 512.
 
 <table border="1">
         <tr>
@@ -129,7 +129,7 @@ Different layers of ’Country Kitchen’ by <a href=" https://benedikt-bitterli
 
 ### Living room
 
-Different layers of ’Grey & White Room’ by <a href=" https://benedikt-bitterli.me/resources/">Wig42</a>, filtered by the LPE module developed in this project. Images are rendered with a maximum depth of 65 and a sample count of 512.
+Different layers of ’Grey & White Room’ by [Wig42](https://benedikt-bitterli.me/resources/), filtered by the LPE module developed in this project. Images are rendered with a maximum depth of 65 and a sample count of 512.
 
 <table border="1">
         <tr>
